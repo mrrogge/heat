@@ -1,0 +1,4 @@
+.haxelib/
+.vscode/
+bin/
+env/

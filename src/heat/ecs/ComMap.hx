@@ -52,31 +52,30 @@ class ComMapInternal<T> implements IComMap<T> {
         switch (id) {
             case Left(strId): {
                 if (com == null) {
-                    if (this.sMap[strId] != null) {
+                    if (this.sMap.exists(strId)) {
+                        this.sMap.remove(strId);
                         this.sArray.remove(strId);
                     }
-                    else {/* already removed */}
                 }
                 else {
-                    if (this.sMap[strId] == null) {
+                    if (!this.sMap.exists(strId)) {
                         this.sArray.push(strId);
                     }
-                    else { /* already added */}
+                    this.sMap[strId] = com;
                 }
-                this.sMap[strId] = com;
             }
             case Right(intId): {
                 if (com == null) {
-                    if (this.iMap[intId] != null) {
+                    if (this.iMap.exists(intId)) {
+                        this.iMap.remove(intId);
                         this.iArray.remove(intId);
                     }
-                    else {/* already removed */}
                 }
                 else {
-                    if (this.iMap[intId] == null) {
+                    if (!this.iMap.exists(intId)) {
                         this.iArray.push(intId);
                     }
-                    else { /* already added */}
+                    this.iMap[intId] = com;
                 }
                 this.iMap[intId] = com;
             }
@@ -88,7 +87,20 @@ class ComMapInternal<T> implements IComMap<T> {
         @param id The `EntityId` key.
     **/
     inline public function remove(id:EntityId):Void {
-        return this.set(id, null);
+        switch id {
+            case Left(strId): {
+                if (this.sMap.exists(strId)) {
+                    this.sMap.remove(strId);
+                    this.sArray.remove(strId);
+                }
+            }
+            case Right(intId): {
+                if (this.iMap.exists(intId)) {
+                    this.iMap.remove(intId);
+                    this.iArray.remove(intId);
+                }
+            }
+        }
     }
 
     @:inheritDoc(IComMap.exists)

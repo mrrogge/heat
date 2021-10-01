@@ -12,6 +12,8 @@ interface IComMap<T> {
 
     public function set(id:EntityId, com:T):Void;
 
+    public function remove(id:EntityId):Void;
+
     /**
         Returns `true` if a component instance exists for `id`, otherwise `false`.
         @param id The `EntityId` key.

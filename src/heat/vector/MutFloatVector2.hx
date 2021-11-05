@@ -1,13 +1,30 @@
 package heat.vector;
 
 @:forward
+@:forward.new
 abstract FloatVector2(Vector2<Float>) from Vector2<Float> to Vector2<Float> {
-    public inline function new(x=0., y=0.) {
-        this = new Vector2<Float>(x, y);
+    public static inline function init(instance:FloatVector2, ?data:FloatVector2Data) {
+        instance.x = (data == null) ? 0.0 : (data.x == null) ? 0.0 : data.x;
+        instance.y = (data == null) ? 0.0 : (data.y == null) ? 0.0 : data.y;
     }
 
-    public inline function clone():FloatVector2 {
-        return new FloatVector2(this.x, this.y);
+    public function clone():FloatVector2 {
+        var result = new FloatVector2();
+        result.x = this.x;
+        result.y = this.y;
+        return result;
+    }
+
+    public function applyTo(target:FloatVector2):FloatVector2 {
+        target.x = this.x;
+        target.y = this.y;
+        return this;
+    }
+
+    public function applyFrom(source:FloatVector2):FloatVector2 {
+        this.x = source.x;
+        this.y = source.y;
+        return this;
     }
 
     /**
@@ -15,7 +32,10 @@ abstract FloatVector2(Vector2<Float>) from Vector2<Float> to Vector2<Float> {
     **/
     @:op(a + b)
     public function addOp(other:FloatVector2):FloatVector2 {
-        return new FloatVector2(this.x + other.x, this.y + other.y);
+        var result = new FloatVector2();
+        result.x = this.x + other.x;
+        result.y = this.y + other.y;
+        return result;
     }
 
     /**

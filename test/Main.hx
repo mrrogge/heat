@@ -247,19 +247,19 @@ class Main extends buddy.SingleSuite {
         describe("some temporary vector tests", {
             var v1 = new heat.vector.FloatVector2();
             var v2 = new heat.vector.FloatVector2();
-            v1.x = 1;
-            v1.y = 2;
-            v2.x = 3;
-            v2.y = 4;
-            trace(v1+v2);
-            trace(v1-v2);
-            trace(v1*v2);
-            trace(v1*100);
-            v1.add(v2);
-            v1.sub(v2);
-            trace(v1);
-            trace(v1.dot(v2));
-            trace(v1.length);
+            // v1.x = 1;
+            // v1.y = 2;
+            // v2.x = 3;
+            // v2.y = 4;
+            // trace(v1+v2);
+            // trace(v1-v2);
+            // trace(v1*v2);
+            // trace(v1*100);
+            // v1.add(v2);
+            // v1.sub(v2);
+            // trace(v1);
+            // trace(v1.dot(v2));
+            // trace(v1.length);
         });
     };
 }

@@ -1,6 +1,6 @@
 {
   "name": "heat",
-  "description": "Haxe ECS and other things",
+  "description": "Game dev framework - bring your own engine",
   "url" : "https://github.com/mrrogge/heat",
   "license": "MIT",
   "tags": [],

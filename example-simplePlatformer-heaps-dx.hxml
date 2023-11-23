@@ -1,0 +1,7 @@
+-cp src
+-cp examples/SimplePlatformer
+extraParams.hxml
+-L heaps
+-L hldx
+--hl bin/heat-simple-platformer.hl
+--main SimplePlatformer

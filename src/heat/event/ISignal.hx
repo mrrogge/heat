@@ -1,7 +1,7 @@
 package heat.event;
 
 /**
-    Interface defining a signal. Signals dynamically connected/disconnected to `ISlot`s with corresponding type parameters.
+    Interface defining a signal. Signals are dynamically connected/disconnected to `ISlot`s with corresponding type parameters.
 **/
 interface ISignal<T> {
     public function connect(slot:ISlot<T>):Void;

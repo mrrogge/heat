@@ -2,6 +2,7 @@ package heat.bridges.heaps;
 
 using heat.HeatPrelude;
 
+#if !eval
 class HeapsBridge {
     static var KEYCODE_MAP: Null<Map<Int, KeyCode>>;
 
@@ -173,3 +174,5 @@ class HeapsBridge {
         ];
     }
 }
+
+#end

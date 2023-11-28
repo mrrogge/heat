@@ -68,9 +68,9 @@ class HeapsBridge {
                     final texture = h3d.mat.Texture.fromColor(0x0000ff);
                     final tile = @:privateAccess new h2d.Tile(texture, 0, 0, 32, 32);
 
+                    engine.begin();
                     scene.renderer.begin();
-                    engine.clear();
-                    
+
                     final cameraQuery = new ComQuery()
                         .with(space.com.camera)
                         .with(space.com.absPosTransform)
@@ -101,6 +101,7 @@ class HeapsBridge {
                         scene.camera.exit(scene.renderer);
                     }
                     scene.renderer.end();
+                    engine.end();
                 });
             };
             engine.init();

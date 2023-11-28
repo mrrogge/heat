@@ -10,27 +10,7 @@ class HeapsBridge {
     }
 
     public function attach(space: HeatSpace) {
-        final sortByDrawOrder = (a, b) -> {
-            final drawOrderA = space.com.drawOrder.get(a);
-            final drawOrderB = space.com.drawOrder.get(b);
-            if (drawOrderA < drawOrderB) {
-                return -1;
-            }
-            else if (drawOrderA > drawOrderB) {
-                return 1;
-            }
-            else {
-                if (a < b) {
-                    return -1;
-                }
-                else if (a > b) {
-                    return  1;
-                }
-                else {
-                    return 0;
-                }
-            }
-        }
+        final sortByDrawOrder = makeSortByDrawOrder(space);
 
         hxd.System.start(function() {
             final engine = @:privateAccess new h3d.Engine();
@@ -233,5 +213,29 @@ class HeapsBridge {
             hxd.Key.LALT => LALT,
             hxd.Key.RALT => RALT,
         ];
+    }
+
+    function makeSortByDrawOrder(space: HeatSpace) {
+        return (a, b) -> {
+            final drawOrderA = space.com.drawOrder.get(a);
+            final drawOrderB = space.com.drawOrder.get(b);
+            if (drawOrderA < drawOrderB) {
+                return -1;
+            }
+            else if (drawOrderA > drawOrderB) {
+                return 1;
+            }
+            else {
+                if (a < b) {
+                    return -1;
+                }
+                else if (a > b) {
+                    return  1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
     }
 }

@@ -10,8 +10,30 @@ class HeapsBridge {
     }
 
     public function attach(space: HeatSpace) {
+        final sortByDrawOrder = (a, b) -> {
+            final drawOrderA = space.com.drawOrder.get(a);
+            final drawOrderB = space.com.drawOrder.get(b);
+            if (drawOrderA < drawOrderB) {
+                return -1;
+            }
+            else if (drawOrderA > drawOrderB) {
+                return 1;
+            }
+            else {
+                if (a < b) {
+                    return -1;
+                }
+                else if (a > b) {
+                    return  1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
+
         hxd.System.start(function() {
-            var engine = @:privateAccess new h3d.Engine();
+            final engine = @:privateAccess new h3d.Engine();
             engine.onReady = function() {
                 engine.onReady = function () {};
                 engine.onContextLost = function () {};
@@ -32,18 +54,57 @@ class HeapsBridge {
                     }
                 });
 
+                space.onWindowResizeRequestSignal.connect(new Slot(function (request: heat.core.window.Window.WindowResizeRequest) {
+                    window.resize(request.width, request.height);
+                }));
+
+                final scene = new h2d.Scene();
+                final dummyDrawable = @:privateAccess new h2d.Drawable(scene);
+
                 hxd.System.setLoop(function () {
                     hxd.Timer.update();
                     space.update(hxd.Timer.dt);
-                    engine.render(this);
+
+                    final texture = h3d.mat.Texture.fromColor(0x0000ff);
+                    final tile = @:privateAccess new h2d.Tile(texture, 0, 0, 32, 32);
+
+                    scene.renderer.begin();
+                    engine.clear();
+                    
+                    final cameraQuery = new ComQuery()
+                        .with(space.com.camera)
+                        .with(space.com.absPosTransform)
+                        .with(space.com.drawOrder);
+                    cameraQuery.run();
+                    cameraQuery.result.sort(sortByDrawOrder);
+
+                    final subjectQuery = new ComQuery()
+                    .with(space.com.absPosTransform)
+                    .with(space.com.drawOrder)
+                    .without(space.com.camera);
+                    subjectQuery.run();
+                    subjectQuery.result.sort(sortByDrawOrder);
+
+                    for (cameraId in cameraQuery.result) {
+                        // TODO: camera filtering - how do we determine which entities are drawn from which cameras?
+                        final camTX = space.com.absPosTransform.get(cameraId);
+                        scene.camera.setPosition(camTX.x, camTX.y);
+                        scene.camera.setAnchor(0.5, 0.5);
+                        scene.camera.sync(scene.renderer);
+                        scene.camera.enter(scene.renderer);
+                        for (subjectId in subjectQuery.result) {
+                            final transform = space.com.absPosTransform.get(subjectId);
+                            dummyDrawable.setPosition(transform.x, transform.y);
+                            @:privateAccess dummyDrawable.sync(scene.renderer);
+                            scene.renderer.drawTile(dummyDrawable, tile);
+                        }
+                        scene.camera.exit(scene.renderer);
+                    }
+                    scene.renderer.end();
                 });
             };
             engine.init();
         });
-    }
-
-    public function render(engine: h3d.Engine) {
-
     }
 
     function setupKeycodeMapData() {

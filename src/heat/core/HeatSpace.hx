@@ -63,4 +63,41 @@ class HeatSpace implements heat.core.IUsesSTD {
     function onKeyReleased(keyCode: KeyCode) {
 
     }
+
+    // TODO: guard against parent/child cycles somehow
+    function syncAbsPos() {
+        static final rootQuery = new ComQuery()
+            .with(com.transform)
+            .with(com.absPosTransform)
+            .without(com.parents);
+        rootQuery.run();
+        for (id in rootQuery.result) {
+            final rootTx = com.transform.get(id);
+            final rootAbsTx = com.absPosTransform.get(id);
+            rootTx?.applyTo(rootAbsTx);
+            final children = com.childrenLists.get(id);
+            if (children == null) {
+                continue;
+            }
+            for (childId in children) {
+                syncAbsPosInner(childId, rootAbsTx);
+            }
+        }
+    }
+
+    function syncAbsPosInner(id: EntityId, parentAbsTx: MTransform) {
+        final tx = com.transform.get(id);
+        final absTX = com.absPosTransform.get(id);
+        if (tx == null || absTX == null) {
+            return;
+        }
+        absTX.multiply(parentAbsTx, tx);
+        final children = com.childrenLists.get(id);
+        if (children == null) {
+            return;
+        }
+        for (childId in children) {
+            syncAbsPosInner(childId, absTX);
+        }
+    }
 }

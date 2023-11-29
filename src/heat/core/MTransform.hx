@@ -315,4 +315,14 @@ class MTransform {
 	public function toString() {
         return '[ ${a} | ${b} ]\n[ ${c} | ${d} ]\n[ ${x} | ${y} ]';
 	}
+
+	public inline function applyTo(other: MTransform):MTransform {
+		other.a = a;
+		other.b = b;
+		other.c = c;
+		other.d = d;
+		other.x = x;
+		other.y = y;
+		return this;
+	}
 }

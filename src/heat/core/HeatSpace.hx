@@ -19,6 +19,7 @@ class HeatSpace implements heat.core.IUsesSTD {
         absPosTransform: new ComMap<MTransform>(),
         camera: new ComMap<Camera>(),
         drawOrder: new ComMap<Int>(),
+        names: new ComMap<String>(),
     }
 
     public function new() {
@@ -53,7 +54,7 @@ class HeatSpace implements heat.core.IUsesSTD {
     }
 
     public function update(dt:Float) {
-
+        syncAbsPos();
     }
 
     function onKeyPressed(keyCode: KeyCode) {
@@ -66,7 +67,7 @@ class HeatSpace implements heat.core.IUsesSTD {
 
     // TODO: guard against parent/child cycles somehow
     function syncAbsPos() {
-        static final rootQuery = new ComQuery()
+        final rootQuery = new ComQuery()
             .with(com.transform)
             .with(com.absPosTransform)
             .without(com.parents);

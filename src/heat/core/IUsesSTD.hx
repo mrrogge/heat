@@ -10,5 +10,6 @@ interface IUsesSTD {
         absPosTransform: ComMap<MTransform>,
         camera: ComMap<Camera>,
         drawOrder: ComMap<Int>,
+        names: ComMap<String>,
     }
 }

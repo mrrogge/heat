@@ -72,7 +72,7 @@ class HeapsBridge {
 			hxd.Timer.update();
 			space.update(hxd.Timer.dt);
 
-
+            render();
 		});
 
 		engineIsReady = true;

@@ -72,49 +72,7 @@ class HeapsBridge {
 			hxd.Timer.update();
 			space.update(hxd.Timer.dt);
 
-			final tile = @:privateAccess new h2d.Tile(null, 0, 0, 32, 32);
 
-			engine.begin();
-			scene.renderer.begin();
-
-            // NOTE: sorting every update might be inefficient, maybe there's a better way to do this.
-			cameraQuery.run();
-			cameraQuery.result.sort(sortByDrawOrder);
-			cameraSubjectQuery.run();
-			cameraSubjectQuery.result.sort(sortByDrawOrder);
-
-			for (cameraId in cameraQuery.result) {
-				// TODO: camera filtering - how do we determine which entities are drawn from which cameras?
-				final camTX = space.com.absPosTransform.get(cameraId);
-				scene.camera.setPosition(camTX.x, camTX.y);
-				scene.camera.setAnchor(0.5, 0.5);
-				scene.camera.sync(scene.renderer);
-				scene.camera.enter(scene.renderer);
-				for (subjectId in cameraSubjectQuery.result) {
-					final transform = space.com.absPosTransform.get(subjectId);
-					final textureRegion = space.com.textureRegions.get(subjectId);
-					if (textureRegion == null)
-						continue;
-					dummyDrawable.setPosition(transform.x, transform.y);
-					@:privateAccess dummyDrawable.sync(scene.renderer);
-					switch (textureRegion.handle) {
-						case Color(color):
-							{
-								@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
-							}
-						case File(path):
-							{
-								throw new haxe.exceptions.NotImplementedException();
-							}
-					}
-					tile.setPosition(textureRegion.x, textureRegion.y);
-					tile.setSize(textureRegion.w, textureRegion.h);
-					scene.renderer.drawTile(dummyDrawable, tile);
-				}
-				scene.camera.exit(scene.renderer);
-			}
-			scene.renderer.end();
-			engine.end();
 		});
 
 		engineIsReady = true;
@@ -302,4 +260,50 @@ class HeapsBridge {
 			}
 		}
 	}
+
+    function render() {
+        static final tile = @:privateAccess new h2d.Tile(null, 0, 0, 32, 32);
+
+        engine.begin();
+        scene.renderer.begin();
+
+        // NOTE: sorting every update might be inefficient, maybe there's a better way to do this.
+        cameraQuery.run();
+        cameraQuery.result.sort(sortByDrawOrder);
+        cameraSubjectQuery.run();
+        cameraSubjectQuery.result.sort(sortByDrawOrder);
+
+        for (cameraId in cameraQuery.result) {
+            // TODO: camera filtering - how do we determine which entities are drawn from which cameras?
+            final camTX = space.com.absPosTransform.get(cameraId);
+            scene.camera.setPosition(camTX.x, camTX.y);
+            scene.camera.setAnchor(0.5, 0.5);
+            scene.camera.sync(scene.renderer);
+            scene.camera.enter(scene.renderer);
+            for (subjectId in cameraSubjectQuery.result) {
+                final transform = space.com.absPosTransform.get(subjectId);
+                final textureRegion = space.com.textureRegions.get(subjectId);
+                if (textureRegion == null)
+                    continue;
+                dummyDrawable.setPosition(transform.x, transform.y);
+                @:privateAccess dummyDrawable.sync(scene.renderer);
+                switch (textureRegion.handle) {
+                    case Color(color):
+                        {
+                            @:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
+                        }
+                    case File(path):
+                        {
+                            throw new haxe.exceptions.NotImplementedException();
+                        }
+                }
+                tile.setPosition(textureRegion.x, textureRegion.y);
+                tile.setSize(textureRegion.w, textureRegion.h);
+                scene.renderer.drawTile(dummyDrawable, tile);
+            }
+            scene.camera.exit(scene.renderer);
+        }
+        scene.renderer.end();
+        engine.end();
+    }
 }

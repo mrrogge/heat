@@ -25,6 +25,7 @@ class SimplePlatformer {
         space.com.absPosTransform.set(squareId1, tx1.clone());
         space.com.drawOrder.set(squareId1, 0);
         space.com.names.set(squareId1, "thing1");
+        space.com.textureRegions.set(squareId1, new heat.texture.TextureRegion(heat.texture.TextureHandle.Color(heat.core.Color.RGB(1, 0, 0)), 0, 0, 32, 32));
 
         final squareId2 = space.getNextID();
         final tx2 = new heat.core.MTransform();
@@ -35,6 +36,7 @@ class SimplePlatformer {
         space.com.drawOrder.set(squareId2, 0);
         space.com.names.set(squareId2, "thing2");
         space.setParent(squareId2, squareId1);
+        space.com.textureRegions.set(squareId2, new heat.texture.TextureRegion(heat.texture.TextureHandle.Color(heat.core.Color.RGB(0, 1, 0)), 0, 0, 64, 64));
     }
 }
 

@@ -22,4 +22,8 @@ class MathTools {
     public static inline function sign(cls:Class<Math>, x:Float):Int {
         return x < 0 ? -1 : (x == 0 ? 0 : 1);
     }
+
+    public static inline function limit(cls:Class<Math>, val:Float, low:Float, high:Float):Float {
+        return (val < low) ? low : ((val > high) ? high : val);
+    }
 }

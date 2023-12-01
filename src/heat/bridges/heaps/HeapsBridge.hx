@@ -74,8 +74,20 @@ class HeapsBridge {
                         scene.camera.enter(scene.renderer);
                         for (subjectId in subjectQuery.result) {
                             final transform = space.com.absPosTransform.get(subjectId);
+                            final textureRegion = space.com.textureRegions.get(subjectId);
+                            if (textureRegion == null) continue;
                             dummyDrawable.setPosition(transform.x, transform.y);
                             @:privateAccess dummyDrawable.sync(scene.renderer);
+                            switch (textureRegion.handle) {
+                                case Color(color): {
+                                    @:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
+                                }
+                                case File(path): {
+                                    throw new haxe.exceptions.NotImplementedException();
+                                }
+                            }
+                            tile.setPosition(textureRegion.x, textureRegion.y);
+                            tile.setSize(textureRegion.w, textureRegion.h);
                             scene.renderer.drawTile(dummyDrawable, tile);
                         }
                         scene.camera.exit(scene.renderer);

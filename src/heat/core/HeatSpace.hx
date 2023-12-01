@@ -20,7 +20,7 @@ class HeatSpace implements heat.core.IUsesSTD {
         camera: new ComMap<Camera>(),
         drawOrder: new ComMap<Int>(),
         names: new ComMap<String>(),
-        textureRegions: new ComMap<heat.texture.TextureRegion>(),
+        textureRegions: new ComMap<heat.texture.TextureRegion<Any>>(),
     }
 
     public function new() {

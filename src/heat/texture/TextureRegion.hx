@@ -1,14 +1,14 @@
 package heat.texture;
 
-class TextureRegion {
-    public var handle:TextureHandle;
+class TextureRegion<T> {
+    public var handle:TextureHandle<T>;
 
     public var x:Float;
     public var y:Float;
     public var w:Float;
     public var h:Float;
 
-    public function new(handle: TextureHandle, x=0., y=0., w=1., h=1.) {
+    public function new(handle: TextureHandle<T>, x=0., y=0., w=1., h=1.) {
         this.handle = handle;
         this.x = x;
         this.y = y;
@@ -25,18 +25,19 @@ class TextureRegion {
         @param dx An optional visual offset of the new Tile along the X axis.
         @param dy An optional visual offset of the new Tile along the Y axis.
     **/
-    public function sub( x : Float, y : Float, w : Float, h : Float) : TextureRegion {
+    public function sub( x : Float, y : Float, w : Float, h : Float) : TextureRegion<T> {
         return new TextureRegion(handle, this.x + x, this.y + y, w, h);
     }
 
     /**
         Create a copy of this Tile instance.
     **/
-    public function clone() : TextureRegion {
+    public function clone() : TextureRegion<T> {
         final newHandle = switch (handle) {
             case Color(color): TextureHandle.Color(color.clone());
             // TODO: no built-in Path cloning? boo. do this later
             case File(path): throw new haxe.exceptions.NotImplementedException();
+            case Other(other): throw new haxe.exceptions.NotImplementedException();
         }
         return new TextureRegion(newHandle, x, y, w, h);
     }
@@ -48,7 +49,7 @@ class TextureRegion {
         @param height The height of the Tile in pixels.
         @param alpha The transparency of the Tile.
     **/
-    public static function fromColor( color : heat.core.Color, w = 1., h = 1.) : TextureRegion {
+    public static function fromColor( color : heat.core.Color, w = 1., h = 1.) : TextureRegion<Any> {
         return new TextureRegion(TextureHandle.Color(color), 0, 0, w, h);
     }    
 }

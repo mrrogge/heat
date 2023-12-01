@@ -66,6 +66,13 @@ class HeapsBridge {
 		scene = new h2d.Scene();
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
 
+        #if js
+        hxd.Res.initEmbed();
+        #else
+        hxd.res.Resource.LIVE_UPDATE = true;
+        hxd.Res.initLocal();
+        #end
+
 		hxd.System.setLoop(function() {
             if (space == null) return;
 
@@ -293,6 +300,10 @@ class HeapsBridge {
                             @:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
                         }
                     case File(path):
+                        {
+                            throw new haxe.exceptions.NotImplementedException();
+                        }
+                    case Other(other):
                         {
                             throw new haxe.exceptions.NotImplementedException();
                         }

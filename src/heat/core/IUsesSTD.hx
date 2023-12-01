@@ -11,6 +11,6 @@ interface IUsesSTD {
         camera: ComMap<Camera>,
         drawOrder: ComMap<Int>,
         names: ComMap<String>,
-        textureRegions: ComMap<heat.texture.TextureRegion>,
+        textureRegions: ComMap<heat.texture.TextureRegion<Any>>,
     }
 }

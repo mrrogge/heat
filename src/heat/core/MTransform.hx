@@ -194,21 +194,6 @@ class MTransform {
 	}
 
 	/**
-		Returns a Point with a total scaling applied by the Matrix.
-		@param p Optional Point instance. If provided, sets values of given Point and returns it. Otherwise returns new Point instance.
-	**/
-	public inline function getScale() {
-		var p = new h2d.col.Point();
-		p.x = Math.sqrt(a * a + b * b);
-		p.y = Math.sqrt(c * c + d * d);
-		if( getDeterminant() < 0 ) {
-			p.x *= -1;
-			p.y *= -1;
-		}
-		return p;
-	}
-
-	/**
 		Multiplies the `a`, `c` and `x` by given `sx` and `b`, `d` and `y` by `sy`.
 	**/
 	public inline function scale( sx : Float, sy : Float ) {

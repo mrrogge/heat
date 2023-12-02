@@ -9,6 +9,8 @@ class HeapsBridge {
 	var engine:Null<h3d.Engine>;
 	var engineIsReady = false;
 
+	final onReady: () -> Void;
+
 	final onKeyPressSignal = new Signal<KeyCode>();
 	final onKeyReleaseSignal = new Signal<KeyCode>();
 
@@ -17,16 +19,18 @@ class HeapsBridge {
 	var scene:Null<h2d.Scene>;
 	var dummyDrawable:Null<h2d.Drawable>;
 
-    var cameraQuery = new ComQuery();
-    var cameraSubjectQuery = new ComQuery();
+	var cameraQuery = new ComQuery();
+	var cameraSubjectQuery = new ComQuery();
 
-	public function new() {
+	public function new(onReady: () -> Void) {
+		this.onReady = onReady;
+
 		setupKeycodeMapData();
 
-        // placeholder slot; gets replaced once system window resource is available
-        onWindowResizeRequestSlot = new Slot(function(request: heat.core.window.Window.WindowResizeRequest) {});
-		
-        hxd.System.start(initSystem);
+		// placeholder slot; gets replaced once system window resource is available
+		onWindowResizeRequestSlot = new Slot(function(request:heat.core.window.Window.WindowResizeRequest) {});
+
+		hxd.System.start(initSystem);
 	}
 
 	function initSystem() {
@@ -59,36 +63,39 @@ class HeapsBridge {
 			}
 		});
 
-		onWindowResizeRequestSlot = new Slot((request: heat.core.window.Window.WindowResizeRequest) -> {
-            window.resize(request.width, request.height);
-        });
+		onWindowResizeRequestSlot = new Slot((request:heat.core.window.Window.WindowResizeRequest) -> {
+			window.resize(request.width, request.height);
+		});
 
 		scene = new h2d.Scene();
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
 
-        #if js
-        hxd.Res.initEmbed();
-        #else
-        hxd.res.Resource.LIVE_UPDATE = true;
-        hxd.Res.initLocal();
-        #end
+		#if js
+		hxd.Res.initEmbed();
+		#else
+		hxd.res.Resource.LIVE_UPDATE = true;
+		hxd.Res.initLocal();
+		#end
 
 		hxd.System.setLoop(function() {
-            if (space == null) return;
+			if (space == null)
+				return;
 
 			hxd.Timer.update();
 			space.update(hxd.Timer.dt);
 
-            render();
+			render();
 		});
 
 		engineIsReady = true;
+
+		onReady();
 	};
 
 	public function attach(space:HeatSpace) {
 		if (this.space != null)
 			throw new haxe.Exception("can only attach to one HeatSpace at a time");
-        this.space = space;
+		this.space = space;
 		onAttach(space);
 	}
 
@@ -96,14 +103,8 @@ class HeapsBridge {
 		space.onKeyPressedSlot.connect(onKeyPressSignal);
 		space.onKeyReleasedSlot.connect(onKeyReleaseSignal);
 		space.onWindowResizeRequestSignal.connect(onWindowResizeRequestSlot);
-        cameraQuery = new ComQuery()
-            .with(space.com.camera)
-            .with(space.com.absPosTransform)
-            .with(space.com.drawOrder);
-        cameraSubjectQuery = new ComQuery()
-            .with(space.com.absPosTransform)
-            .with(space.com.drawOrder)
-            .without(space.com.camera);
+		cameraQuery = new ComQuery().with(space.com.camera).with(space.com.absPosTransform).with(space.com.drawOrder);
+		cameraSubjectQuery = new ComQuery().with(space.com.absPosTransform).with(space.com.drawOrder).without(space.com.camera);
 	}
 
 	public function detach() {
@@ -116,9 +117,9 @@ class HeapsBridge {
 	function onDetach() {
 		space.onKeyPressedSlot.disconnect(onKeyPressSignal);
 		space.onKeyReleasedSlot.disconnect(onKeyReleaseSignal);
-        space.onWindowResizeRequestSignal.disconnect(onWindowResizeRequestSlot);
-        cameraQuery = new ComQuery();
-        cameraSubjectQuery = new ComQuery();
+		space.onWindowResizeRequestSignal.disconnect(onWindowResizeRequestSlot);
+		cameraQuery = new ComQuery();
+		cameraSubjectQuery = new ComQuery();
 	}
 
 	function setupKeycodeMapData() {
@@ -268,53 +269,57 @@ class HeapsBridge {
 		}
 	}
 
-    function render() {
-        static final tile = @:privateAccess new h2d.Tile(null, 0, 0, 32, 32);
+	function render() {
+		static final tile = @:privateAccess new h2d.Tile(null, 0, 0, 32, 32);
 
-        engine.begin();
-        scene.renderer.begin();
+		engine.begin();
+		scene.renderer.begin();
 
-        // NOTE: sorting every update might be inefficient, maybe there's a better way to do this.
-        cameraQuery.run();
-        cameraQuery.result.sort(sortByDrawOrder);
-        cameraSubjectQuery.run();
-        cameraSubjectQuery.result.sort(sortByDrawOrder);
+		// NOTE: sorting every update might be inefficient, maybe there's a better way to do this.
+		cameraQuery.run();
+		cameraQuery.result.sort(sortByDrawOrder);
+		cameraSubjectQuery.run();
+		cameraSubjectQuery.result.sort(sortByDrawOrder);
 
-        for (cameraId in cameraQuery.result) {
-            // TODO: camera filtering - how do we determine which entities are drawn from which cameras?
-            final camTX = space.com.absPosTransform.get(cameraId);
-            scene.camera.setPosition(camTX.x, camTX.y);
-            scene.camera.setAnchor(0.5, 0.5);
-            scene.camera.sync(scene.renderer);
-            scene.camera.enter(scene.renderer);
-            for (subjectId in cameraSubjectQuery.result) {
-                final transform = space.com.absPosTransform.get(subjectId);
-                final textureRegion = space.com.textureRegions.get(subjectId);
-                if (textureRegion == null)
-                    continue;
-                dummyDrawable.setPosition(transform.x, transform.y);
-                @:privateAccess dummyDrawable.sync(scene.renderer);
-                switch (textureRegion.handle) {
-                    case Color(color):
-                        {
-                            @:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
-                        }
-                    case File(path):
-                        {
-                            throw new haxe.exceptions.NotImplementedException();
-                        }
-                    case Other(other):
-                        {
-                            throw new haxe.exceptions.NotImplementedException();
-                        }
-                }
-                tile.setPosition(textureRegion.x, textureRegion.y);
-                tile.setSize(textureRegion.w, textureRegion.h);
-                scene.renderer.drawTile(dummyDrawable, tile);
-            }
-            scene.camera.exit(scene.renderer);
-        }
-        scene.renderer.end();
-        engine.end();
-    }
+		for (cameraId in cameraQuery.result) {
+			// TODO: camera filtering - how do we determine which entities are drawn from which cameras?
+			final camTX = space.com.absPosTransform.get(cameraId);
+			scene.camera.setPosition(camTX.x, camTX.y);
+			scene.camera.setAnchor(0.5, 0.5);
+			scene.camera.sync(scene.renderer);
+			scene.camera.enter(scene.renderer);
+			for (subjectId in cameraSubjectQuery.result) {
+				final transform = space.com.absPosTransform.get(subjectId);
+				final textureRegion = space.com.textureRegions.get(subjectId);
+				if (textureRegion == null)
+					continue;
+				dummyDrawable.setPosition(transform.x, transform.y);
+				@:privateAccess dummyDrawable.sync(scene.renderer);
+				switch (textureRegion.handle) {
+					case Color(color):
+						{
+							@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
+						}
+					case File(path):
+						{
+							throw new haxe.exceptions.NotImplementedException();
+						}
+					case Other(other):
+						{
+							if (Std.isOfType(other, hxd.res.Image)) {
+								@:privateAccess tile.setTexture((other : hxd.res.Image).toTexture());
+							} else {
+								throw new haxe.Exception('unexpected texture handle type');
+							}
+						}
+				}
+				tile.setPosition(textureRegion.x, textureRegion.y);
+				tile.setSize(textureRegion.w, textureRegion.h);
+				scene.renderer.drawTile(dummyDrawable, tile);
+			}
+			scene.camera.exit(scene.renderer);
+		}
+		scene.renderer.end();
+		engine.end();
+	}
 }

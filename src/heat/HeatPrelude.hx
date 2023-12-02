@@ -15,6 +15,7 @@ typedef MVector2<T> = heat.core.MVector2<T>;
 typedef MVectorBool2 = heat.core.MVectorBool2;
 typedef MVectorFloat2 = heat.core.MVectorFloat2;
 typedef MVectorInt2 = heat.core.MVectorInt2;
+typedef Noise = heat.core.Noise;
 typedef Pool<T> = heat.core.Pool<T>;
 typedef Tuple2<T0, T1> = heat.core.Tuple2<T0, T1>;
 typedef Tuple3<T0, T1, T2> = heat.core.Tuple3<T0, T1, T2>;

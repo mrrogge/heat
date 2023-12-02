@@ -1,7 +1,7 @@
 package heat.texture;
 
-enum TextureHandle<T> {
+enum TextureHandle {
     Color(color:heat.core.Color);
     File(path:haxe.io.Path);
-    Other(other:T);
+    Other(other:Any);
 }

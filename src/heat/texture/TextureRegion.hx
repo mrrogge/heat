@@ -1,14 +1,14 @@
 package heat.texture;
 
-class TextureRegion<T> {
-    public var handle:TextureHandle<T>;
+class TextureRegion {
+    public var handle:TextureHandle;
 
     public var x:Float;
     public var y:Float;
     public var w:Float;
     public var h:Float;
 
-    public function new(handle: TextureHandle<T>, x=0., y=0., w=1., h=1.) {
+    public function new(handle: TextureHandle, x=0., y=0., w=1., h=1.) {
         this.handle = handle;
         this.x = x;
         this.y = y;
@@ -25,14 +25,14 @@ class TextureRegion<T> {
         @param dx An optional visual offset of the new Tile along the X axis.
         @param dy An optional visual offset of the new Tile along the Y axis.
     **/
-    public function sub( x : Float, y : Float, w : Float, h : Float) : TextureRegion<T> {
+    public function sub( x : Float, y : Float, w : Float, h : Float) : TextureRegion {
         return new TextureRegion(handle, this.x + x, this.y + y, w, h);
     }
 
     /**
         Create a copy of this Tile instance.
     **/
-    public function clone() : TextureRegion<T> {
+    public function clone() : TextureRegion {
         final newHandle = switch (handle) {
             case Color(color): TextureHandle.Color(color.clone());
             // TODO: no built-in Path cloning? boo. do this later
@@ -49,7 +49,7 @@ class TextureRegion<T> {
         @param height The height of the Tile in pixels.
         @param alpha The transparency of the Tile.
     **/
-    public static function fromColor( color : heat.core.Color, w = 1., h = 1.) : TextureRegion<Any> {
+    public static function fromColor( color : heat.core.Color, w = 1., h = 1.) : TextureRegion {
         return new TextureRegion(TextureHandle.Color(color), 0, 0, w, h);
     }    
 }

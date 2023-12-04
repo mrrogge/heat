@@ -308,7 +308,11 @@ class HeapsBridge {
 						{
 							if (Std.isOfType(other, hxd.res.Image)) {
 								@:privateAccess tile.setTexture((other : hxd.res.Image).toTexture());
-							} else {
+							} 
+							else if (Std.isOfType(other, h3d.mat.Texture)) {
+								@:privateAccess tile.setTexture((other : h3d.mat.Texture));
+							}
+							else {
 								throw new haxe.Exception('unexpected texture handle type');
 							}
 						}

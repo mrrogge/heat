@@ -133,5 +133,9 @@ class TupleBuilder {
             build(i);
         }
     }
+
+    public static function init():Void {
+        Context.onAfterInitMacros(() -> buildTuplesUpTo(5));
+    }
 }
 #end

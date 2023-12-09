@@ -2,7 +2,8 @@ package heat.core;
 
 using heat.HeatPrelude;
 
-class HeatSpace implements heat.core.IUsesSTD {
+@:build(heat.core.StandardPlugin.applyStandardPlugin())
+class HeatSpace implements I_UsesHeatStandardPlugin {
     public var onKeyPressedSlot: Slot<KeyCode>;
     public var onKeyReleasedSlot: Slot<KeyCode>;
 
@@ -10,18 +11,6 @@ class HeatSpace implements heat.core.IUsesSTD {
     public var onWindowResizeRequestSignal: ISignal<heat.core.window.Window.WindowResizeRequest>;
 
     public var lastID(default, null): Null<EntityId> = null;
-
-    // TODO: use macros for adding ComMaps to a HeatSpace, a-la rust derive API.
-    public final com = {
-        parents: new ComMap<EntityId>(),
-        childrenLists: new ComMap<Array<EntityId>>(),
-        transform: new ComMap<MTransform>(),
-        absPosTransform: new ComMap<MTransform>(),
-        camera: new ComMap<Camera>(),
-        drawOrder: new ComMap<Int>(),
-        names: new ComMap<String>(),
-        textureRegions: new ComMap<heat.texture.TextureRegion>(),
-    }
 
     public function new() {
         this.onKeyPressedSlot = new Slot(onKeyPressed);

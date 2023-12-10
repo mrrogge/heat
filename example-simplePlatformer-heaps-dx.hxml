@@ -4,4 +4,5 @@ extraParams.hxml
 -L heaps
 -L hldx
 --hl bin/heat-simple-platformer.hl
+--macro SimplePlatformerPlugin.init()
 --main SimplePlatformer

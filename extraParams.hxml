@@ -1,1 +1,2 @@
---macro heat.core.macro.TupleBuilder.buildTuplesUpTo(5)
+--macro heat.core.macro.TupleBuilder.init()
+--macro heat.core.StandardPlugin.init()

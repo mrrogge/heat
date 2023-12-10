@@ -1,7 +1,6 @@
 using heat.HeatPrelude;
 
-@:autoBuild
-@:build(heat.core.macro.HeatSpaceMacro.applyGamePlugin())
+@:build(SimplePlatformerPlugin.build())
 class SimplePlatformerSpace extends HeatSpace {
     final cameraQuery = new ComQuery();
     final transformQuery = new ComQuery();

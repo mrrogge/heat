@@ -13,12 +13,19 @@ class StandardPlugin {
 			case Ok(newFields): newFields;
 		}
 
+		final structType = switch (heat.core.macro.HeatSpaceMacro.makeComMapStructType(comMapExprs)) {
+			case Ok(result): result;
+			case Err(err): {
+				return Context.error(err, Context.currentPos());
+			}
+		}
+
 		final stdField:Field = {
 			name: "com",
 			access: [APublic, AFinal],
-			kind: FVar(null, {
+			kind: FVar(structType, {
 				expr: EObjectDecl(newFields),
-				pos: Context.currentPos()
+				pos: Context.currentPos(),
 			}),
 			pos: Context.currentPos()
 		}
@@ -65,7 +72,6 @@ class StandardPlugin {
 						}
 					]
 				}
-
 				Context.defineType(interfaceType);
 			}
 		});

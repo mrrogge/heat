@@ -57,6 +57,7 @@ class HeatSpaceMacro {
                     name: fieldName,
                     kind: FVar(macro : heat.ecs.ComMap<$t>, withInit ? macro new heat.ecs.ComMap() : null),
                     pos: comMapExpr.pos,
+                    access: [APublic, AFinal]
                 };
                 return Ok(field);
             }

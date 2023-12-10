@@ -68,6 +68,12 @@ class HeapsBridge {
 		});
 
 		scene = new h2d.Scene();
+		window.addResizeEvent(scene.checkResize);
+		
+		
+		//sets the scene to a fixed size with space around it to fill the window. Hardcoding this for now, should eventually configurable via game UI
+		scene.scaleMode = LetterBox(window.width, window.height, true, Center, Center);
+		
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
 
 		#if js
@@ -284,8 +290,10 @@ class HeapsBridge {
 		for (cameraId in cameraQuery.result) {
 			// TODO: camera filtering - how do we determine which entities are drawn from which cameras?
 			final camTX = space.com.absPosTransform.get(cameraId);
+			final camCom = space.com.camera.get(cameraId);
 			scene.camera.setPosition(camTX.x, camTX.y);
 			scene.camera.setAnchor(0.5, 0.5);
+			scene.camera.setScale(camCom.scale, camCom.scale);
 			scene.camera.sync(scene.renderer);
 			scene.camera.enter(scene.renderer);
 			for (subjectId in cameraSubjectQuery.result) {

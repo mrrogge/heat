@@ -10,6 +10,7 @@ using haxe.macro.MacroStringTools;
 
 using heat.core.Result.ResultTools;
 
+#if (macro || eval)
 @:keep
 class HeatSpaceMacro {
     macro static public function addComMaps(comMapsExpr:Expr):Array<Field> {
@@ -53,11 +54,12 @@ class HeatSpaceMacro {
                         return Err("must specify a valid identifier");
                     }
                 }
+                final accessFlags = [APublic, AFinal];
                 final field:Field = {
                     name: fieldName,
                     kind: FVar(macro : heat.ecs.ComMap<$t>, withInit ? macro new heat.ecs.ComMap() : null),
                     pos: comMapExpr.pos,
-                    access: [APublic, AFinal]
+                    access: accessFlags,
                 };
                 return Ok(field);
             }
@@ -139,3 +141,5 @@ class HeatSpaceMacro {
         }
     }
 }
+
+#end

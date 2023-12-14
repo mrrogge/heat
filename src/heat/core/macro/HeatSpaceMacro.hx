@@ -11,7 +11,6 @@ using haxe.macro.MacroStringTools;
 using heat.core.Result.ResultTools;
 
 #if (macro || eval)
-@:keep
 class HeatSpaceMacro {
     macro static public function addComMaps(comMapsExpr:Expr):Array<Field> {
         final fields = Context.getBuildFields();

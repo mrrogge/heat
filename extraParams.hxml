@@ -1,2 +1,2 @@
 --macro heat.core.macro.TupleBuilder.init()
---macro heat.core.StandardPlugin.init()
+--macro heat.std.StandardPlugin.init()

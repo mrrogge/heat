@@ -1,8 +1,8 @@
 using buddy.Should;
 
-import test.VectorSuite;
-import test.EcsSuite;
-import test.EventSuite;
+import VectorSuite;
+import EcsSuite;
+import EventSuite;
 
 class Main implements buddy.Buddy<[
     VectorSuite,

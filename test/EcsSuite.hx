@@ -1,5 +1,3 @@
-package test;
-
 using buddy.Should;
 using heat.HeatPrelude;
 

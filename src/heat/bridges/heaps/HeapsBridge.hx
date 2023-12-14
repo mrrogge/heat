@@ -5,7 +5,8 @@ using heat.HeatPrelude;
 class HeapsBridge {
 	static var KEYCODE_MAP:Null<Map<Int, KeyCode>>;
 
-	var space:Null<HeatSpace>;
+	var space:Null<IHeatSpace>;
+	var spaceStd:Null<I_UsesHeatStandardPlugin>;
 	var engine:Null<h3d.Engine>;
 	var engineIsReady = false;
 
@@ -52,6 +53,9 @@ class HeapsBridge {
 			switch (event.kind) {
 				case EKeyDown:
 					{
+						if (!hxd.Key.ALLOW_KEY_REPEAT && hxd.Key.isPressed(event.keyCode)) {
+							return;
+						}
 						onKeyPressSignal.emit(KEYCODE_MAP.get(event.keyCode));
 					}
 				case EKeyUp:
@@ -98,19 +102,20 @@ class HeapsBridge {
 		onReady();
 	};
 
-	public function attach(space:HeatSpace) {
+	public function attach(asSpace:IHeatSpace, asSpaceStd:I_UsesHeatStandardPlugin) {
 		if (this.space != null)
 			throw new haxe.Exception("can only attach to one HeatSpace at a time");
-		this.space = space;
-		onAttach(space);
+		this.space = asSpace;
+		this.spaceStd = asSpaceStd;
+		onAttach();
 	}
 
-	function onAttach(space:HeatSpace) {
+	function onAttach() {
 		space.onKeyPressedSlot.connect(onKeyPressSignal);
 		space.onKeyReleasedSlot.connect(onKeyReleaseSignal);
 		space.onWindowResizeRequestSignal.connect(onWindowResizeRequestSlot);
-		cameraQuery = new ComQuery().with(space.com.camera).with(space.com.absPosTransform).with(space.com.drawOrder);
-		cameraSubjectQuery = new ComQuery().with(space.com.absPosTransform).with(space.com.drawOrder).without(space.com.camera);
+		cameraQuery = new ComQuery().with(spaceStd.com.camera).with(spaceStd.com.absPosTransform).with(spaceStd.com.drawOrder);
+		cameraSubjectQuery = new ComQuery().with(spaceStd.com.absPosTransform).with(spaceStd.com.drawOrder).without(spaceStd.com.camera);
 	}
 
 	public function detach() {
@@ -118,6 +123,7 @@ class HeapsBridge {
 			return;
 		onDetach();
 		space = null;
+		spaceStd = null;
 	}
 
 	function onDetach() {
@@ -258,8 +264,8 @@ class HeapsBridge {
 	function sortByDrawOrder(a:EntityId, b:EntityId) {
 		if (space == null)
 			return 0;
-		final drawOrderA = space.com.drawOrder.get(a);
-		final drawOrderB = space.com.drawOrder.get(b);
+		final drawOrderA = spaceStd.com.drawOrder.get(a);
+		final drawOrderB = spaceStd.com.drawOrder.get(b);
 		if (drawOrderA < drawOrderB) {
 			return -1;
 		} else if (drawOrderA > drawOrderB) {
@@ -288,17 +294,17 @@ class HeapsBridge {
 		cameraSubjectQuery.result.sort(sortByDrawOrder);
 
 		for (cameraId in cameraQuery.result) {
-			// TODO: camera filtering - how do we determine which entities are drawn from which cameras?
-			final camTX = space.com.absPosTransform.get(cameraId);
-			final camCom = space.com.camera.get(cameraId);
+			final camCom = spaceStd.com.camera.get(cameraId);
+			final camTX = spaceStd.com.absPosTransform.get(cameraId);
 			scene.camera.setPosition(camTX.x, camTX.y);
 			scene.camera.setAnchor(0.5, 0.5);
 			scene.camera.setScale(camCom.scale, camCom.scale);
 			scene.camera.sync(scene.renderer);
 			scene.camera.enter(scene.renderer);
 			for (subjectId in cameraSubjectQuery.result) {
-				final transform = space.com.absPosTransform.get(subjectId);
-				final textureRegion = space.com.textureRegions.get(subjectId);
+				if (!camCom.idFilter(subjectId)) continue;
+				final transform = spaceStd.com.absPosTransform.get(subjectId);
+				final textureRegion = spaceStd.com.textureRegions.get(subjectId);
 				if (textureRegion == null)
 					continue;
 				dummyDrawable.setPosition(transform.x, transform.y);

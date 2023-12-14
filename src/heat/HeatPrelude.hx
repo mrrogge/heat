@@ -3,10 +3,11 @@ package heat;
 using heat.core.MathTools;
 
 // core
-typedef Camtera = heat.core.Camera;
+typedef Camera = heat.core.Camera;
 typedef Circle = heat.core.Circle;
 typedef Color = heat.core.Color;
 typedef HeatSpace = heat.core.HeatSpace;
+typedef IHeatSpace = heat.core.IHeatSpace;
 typedef ILineSegment = heat.core.ILineSegment;
 typedef IVector2<T> = heat.core.IVector2<T>;
 typedef LineSegment = heat.core.LineSegment;
@@ -49,6 +50,10 @@ typedef Slot<T> = heat.event.Slot<T>;
 
 // key
 typedef KeyCode = heat.key.KeyCode;
+typedef KeyEventKind = heat.key.KeyEventKind;
+
+// std
+typedef HeatSpaceStd = heat.std.HeatSpaceStd;
 
 // texture
 typedef TextureHandle = heat.texture.TextureHandle;

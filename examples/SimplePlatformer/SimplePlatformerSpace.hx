@@ -1,7 +1,7 @@
 using heat.HeatPrelude;
 
-@:build(SimplePlatformerPlugin.build())
-class SimplePlatformerSpace extends HeatSpace {
+@:build(SimplePlatformerPlugin.apply())
+class SimplePlatformerSpace extends HeatSpaceStd {
     final cameraQuery = new ComQuery();
     final transformQuery = new ComQuery();
     final heroQuery = new ComQuery();
@@ -11,7 +11,7 @@ class SimplePlatformerSpace extends HeatSpace {
 
         cameraQuery.with(com.camera).with(com.absPosTransform);
         transformQuery.with(com.transform);
-        heroQuery.with(heroMap);
+        heroQuery.with(game.heroMap);
 
         final camId = getNextID();
         final camTX = new heat.core.MTransform();
@@ -30,26 +30,22 @@ class SimplePlatformerSpace extends HeatSpace {
         com.textureRegions.set(heroID, new heat.texture.TextureRegion(
             heat.texture.TextureHandle.Other(hxd.Res.girl_png), 0, 0, 32, 48
         ));
-        heroMap.set(heroID, Noise);
+        game.heroMap.set(heroID, Noise);
+        game.heroMoveStates.set(heroID, new HeroMoveState());
+    }
 
+    override function update(dt:Float) {
+        HeroSys.update(this, dt);
+        syncAbsPos();
     }
 
     override function onKeyPressed(keyCode:KeyCode) {
-        switch (keyCode) {
-            case A, LEFT: {
-                moveHero(-20., 0.);
-            }
-            case D, RIGHT: {
-                moveHero(20., 0.);
-            }
-            case W, UP: {
-                moveHero(0., -20.);
-            }
-            case S, DOWN: {
-                moveHero(0., 20.);
-            }
-            default: {}
-        }
+        HeroSys.onKeyEvent(this, keyCode, PRESSED);
+        trace(keyCode);
+    }
+
+    override function onKeyReleased(keyCode:KeyCode) {
+        HeroSys.onKeyEvent(this, keyCode, RELEASED);
         trace(keyCode);
     }
 
@@ -58,19 +54,6 @@ class SimplePlatformerSpace extends HeatSpace {
         for (id in cameraQuery.result) {
             com.absPosTransform.get(id).x += x;
             com.absPosTransform.get(id).y += y;
-        }
-    }
-
-    function moveThing(id: EntityId, x: Float, y: Float) {
-        if (!transformQuery.checkId(id)) return;
-        com.transform.get(id).x += x;
-        com.transform.get(id).y += y;
-    }
-
-    function moveHero(x: Float, y: Float) {
-        heroQuery.run();
-        for (id in heroQuery.result) {
-            moveThing(id, x, y);
         }
     }
 }

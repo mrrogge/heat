@@ -48,6 +48,8 @@ class HeapsBridge {
 		engine.onContextLost = function() {};
 		engine.onResized = function() {};
 
+		hxd.Key.initialize();
+
 		final window = hxd.Window.getInstance();
 		window.addEventTarget(function(event:hxd.Event) {
 			switch (event.kind) {

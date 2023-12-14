@@ -1,7 +1,13 @@
 -cp src
 -D doc-gen
---macro include('heat')
 extraParams.hxml
+--macro include('heat', false)
+--macro include('heat.core')
+--macro include('heat.ecs')
+--macro include('heat.event')
+--macro include('heat.key')
+--macro include('heat.std')
+--macro include('heat.texture')
 --no-output
 --xml bin/types.xml
 --interp

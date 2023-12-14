@@ -1,6 +1,14 @@
 package heat.ecs;
 
 class ComQuery {
+    public static function combine(query1:ComQuery, query2:ComQuery): ComQuery {
+        final combined = query1.clone();
+        for (cond in query2.condArray) {
+            combined.condArray.push(cond);
+        }
+        return combined;
+    }
+
     public final result = new Array<EntityId>();
 
     final condArray = new Array<Condition>();
@@ -28,6 +36,13 @@ class ComQuery {
     @:generic
     public function whereNotEqualTo<T>(comMap:Map<EntityId, T>, value:T):ComQuery {
         condArray.push(new WhereNotEqualToCondition<T>(comMap, value));
+        return this;
+    }
+
+    public function clear():ComQuery {
+        while (condArray.length > 0) {
+            condArray.pop();
+        }
         return this;
     }
 
@@ -73,6 +88,14 @@ class ComQuery {
             if (!cond.check(id)) return false;
         }
         return true;
+    }
+
+    public function clone():ComQuery {
+        final newQuery = new ComQuery();
+        for (cond in condArray) {
+            newQuery.condArray.push(cond);
+        }
+        return newQuery;
     }
 }
 

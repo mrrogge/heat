@@ -315,6 +315,8 @@ class HeapsBridge {
 				inline function drawTile() {
 					tile.setPosition(textureRegion.x, textureRegion.y);
 					tile.setSize(textureRegion.w, textureRegion.h);
+					tile.dx = -textureRegion.ox;
+					tile.dy = -textureRegion.oy;
 					scene.renderer.drawTile(dummyDrawable, tile);
 				}
 
@@ -338,7 +340,8 @@ class HeapsBridge {
 								drawTile();
 							} else if (Std.isOfType(other, h2d.Graphics)) {
 								final graphics = (other : h2d.Graphics);
-								graphics.setPosition(transform.x, transform.y);
+								graphics.setPosition(transform.x - textureRegion.ox, 
+									transform.y - textureRegion.oy);
 								@:privateAccess graphics.sync(scene.renderer);
 								@:privateAccess graphics.draw(scene.renderer);
 							} else {

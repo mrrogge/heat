@@ -10,7 +10,7 @@ class HeapsBridge {
 	var engine:Null<h3d.Engine>;
 	var engineIsReady = false;
 
-	final onReady: () -> Void;
+	final onReady:() -> Void;
 
 	final onKeyPressSignal = new Signal<KeyCode>();
 	final onKeyReleaseSignal = new Signal<KeyCode>();
@@ -23,7 +23,7 @@ class HeapsBridge {
 	var cameraQuery = new ComQuery();
 	var cameraSubjectQuery = new ComQuery();
 
-	public function new(onReady: () -> Void) {
+	public function new(onReady:() -> Void) {
 		this.onReady = onReady;
 
 		setupKeycodeMapData();
@@ -75,11 +75,10 @@ class HeapsBridge {
 
 		scene = new h2d.Scene();
 		window.addResizeEvent(scene.checkResize);
-		
-		
-		//sets the scene to a fixed size with space around it to fill the window. Hardcoding this for now, should eventually configurable via game UI
+
+		// sets the scene to a fixed size with space around it to fill the window. Hardcoding this for now, should eventually configurable via game UI
 		scene.scaleMode = LetterBox(window.width, window.height, true, Center, Center);
-		
+
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
 
 		#if js
@@ -304,17 +303,26 @@ class HeapsBridge {
 			scene.camera.sync(scene.renderer);
 			scene.camera.enter(scene.renderer);
 			for (subjectId in cameraSubjectQuery.result) {
-				if (!camCom.idFilter(subjectId)) continue;
+				if (!camCom.idFilter(subjectId))
+					continue;
 				final transform = spaceStd.com.absPosTransform.get(subjectId);
 				final textureRegion = spaceStd.com.textureRegions.get(subjectId);
 				if (textureRegion == null)
 					continue;
 				dummyDrawable.setPosition(transform.x, transform.y);
 				@:privateAccess dummyDrawable.sync(scene.renderer);
+
+				inline function drawTile() {
+					tile.setPosition(textureRegion.x, textureRegion.y);
+					tile.setSize(textureRegion.w, textureRegion.h);
+					scene.renderer.drawTile(dummyDrawable, tile);
+				}
+
 				switch (textureRegion.handle) {
 					case Color(color):
 						{
 							@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
+							drawTile();
 						}
 					case File(path):
 						{
@@ -324,18 +332,20 @@ class HeapsBridge {
 						{
 							if (Std.isOfType(other, hxd.res.Image)) {
 								@:privateAccess tile.setTexture((other : hxd.res.Image).toTexture());
-							} 
-							else if (Std.isOfType(other, h3d.mat.Texture)) {
+								drawTile();
+							} else if (Std.isOfType(other, h3d.mat.Texture)) {
 								@:privateAccess tile.setTexture((other : h3d.mat.Texture));
-							}
-							else {
+								drawTile();
+							} else if (Std.isOfType(other, h2d.Graphics)) {
+								final graphics = (other : h2d.Graphics);
+								graphics.setPosition(transform.x, transform.y);
+								@:privateAccess graphics.sync(scene.renderer);
+								@:privateAccess graphics.draw(scene.renderer);
+							} else {
 								throw new haxe.Exception('unexpected texture handle type');
 							}
 						}
 				}
-				tile.setPosition(textureRegion.x, textureRegion.y);
-				tile.setSize(textureRegion.w, textureRegion.h);
-				scene.renderer.drawTile(dummyDrawable, tile);
 			}
 			scene.camera.exit(scene.renderer);
 		}

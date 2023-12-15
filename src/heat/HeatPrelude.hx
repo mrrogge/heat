@@ -53,8 +53,7 @@ typedef KeyCode = heat.key.KeyCode;
 typedef KeyEventKind = heat.key.KeyEventKind;
 
 // std
-typedef HeatSpaceStd = heat.std.HeatSpaceStd;
-
+// typedef HeatSpaceStd = heat.std.HeatSpaceStd;
 // texture
 typedef TextureHandle = heat.texture.TextureHandle;
 typedef TextureRegion = heat.texture.TextureRegion;

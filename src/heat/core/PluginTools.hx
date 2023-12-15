@@ -5,7 +5,7 @@ import haxe.macro.Context;
 
 #if (macro || eval)
 class PluginTools {
-    public static function applyWrapper<T>(cls:Class<T>, comMapExprs:Expr, groupFieldName:String):Array<Field> { 
+	public static function applyWrapper<T>(cls:Class<T>, comMapExprs:Expr, groupFieldName:String):Array<Field> {
 		var fields = Context.getBuildFields();
 		final newFields = switch (heat.core.macro.HeatSpaceMacro.makeComMapObjectFields(comMapExprs)) {
 			case Err(err): {
@@ -17,8 +17,8 @@ class PluginTools {
 		final structType = switch (heat.core.macro.HeatSpaceMacro.makeComMapStructType(comMapExprs)) {
 			case Ok(result): result;
 			case Err(err): {
-				return Context.error(err, Context.currentPos());
-			}
+					return Context.error(err, Context.currentPos());
+				}
 		}
 
 		final stdField:Field = {
@@ -34,7 +34,7 @@ class PluginTools {
 		fields.push(stdField);
 
 		return fields;
-    }
+	}
 
 	public static function initWrapper<T>(cls:Class<T>, comMapExprs:Expr, interfaceName:String, groupFieldName:String) {
 		Context.onAfterInitMacros(() -> {

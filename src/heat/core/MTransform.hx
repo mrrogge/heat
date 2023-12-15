@@ -3,12 +3,12 @@ package heat.core;
 class MTransform {
 	static var tmp = new MTransform();
 
-	public var a : Float;
-	public var b : Float;
-	public var c : Float;
-	public var d : Float;
-	public var x : Float;
-	public var y : Float;
+	public var a:Float;
+	public var b:Float;
+	public var c:Float;
+	public var d:Float;
+	public var x:Float;
+	public var y:Float;
 
 	/**
 		Create a new identity Matrix.
@@ -25,8 +25,12 @@ class MTransform {
 		```
 	**/
 	public inline function identity() {
-		a = 1; b = 0; c = 0; d = 1;
-		x = 0; y = 0;
+		a = 1;
+		b = 0;
+		c = 0;
+		d = 1;
+		x = 0;
+		y = 0;
 	}
 
 	/**
@@ -37,7 +41,10 @@ class MTransform {
 		```
 	**/
 	public inline function initTranslate(x, y) {
-		a = 1; b = 0; c = 0; d = 1;
+		a = 1;
+		b = 0;
+		c = 0;
+		d = 1;
 		this.x = x;
 		this.y = y;
 	}
@@ -50,8 +57,12 @@ class MTransform {
 		```
 	**/
 	public inline function initScale(sx, sy) {
-		a = sx; b = 0; c = 0; d = sy;
-		x = 0; y = 0;
+		a = sx;
+		b = 0;
+		c = 0;
+		d = sy;
+		x = 0;
+		y = 0;
 	}
 
 	/**
@@ -108,7 +119,7 @@ class MTransform {
 	/**
 		Sets this Matrix value to be the inverse of the given Matrix `m`.
 	**/
-	public function inverse( m : MTransform ) {
+	public function inverse(m:MTransform) {
 		var a = m.a, b = m.b;
 		var c = m.c, d = m.d;
 		var x = m.x, y = m.y;
@@ -124,14 +135,14 @@ class MTransform {
 	/**
 		Returns a new Point that is a result of transforming Point `pt` by this Matrix.
 	**/
-	public inline function applyToVector( v : IVector2<Float> ): VectorFloat2 {
+	public inline function applyToVector(v:IVector2<Float>):VectorFloat2 {
 		return new VectorFloat2(v.x * a + v.y * c + x, v.x * b + v.y * d + y);
 	}
 
 	/**
 		Applies translation transform to Matrix by given `x` and `y`.
 	**/
-	public inline function translate( x : Float, y : Float ) {
+	public inline function translate(x:Float, y:Float) {
 		this.x += x;
 		this.y += y;
 	}
@@ -139,14 +150,14 @@ class MTransform {
 	/**
 		Applies translation transform on X-axis to Matrix by given `x`. Equivalent of `matrix.x += x`.
 	**/
-	public inline function translateX( x : Float ) {
+	public inline function translateX(x:Float) {
 		this.x += x;
 	}
 
 	/**
 		Applies translation transform on Y-axis to Matrix by given `y`. Equivalent of `matrix.y += y`.
 	**/
-	public inline function translateY( y : Float ) {
+	public inline function translateY(y:Float) {
 		this.y += y;
 	}
 
@@ -154,7 +165,7 @@ class MTransform {
 		Transforms given `x` and `y` with current Matrix values (excluding translation) and
 		applies translation transform to Matrix by resulting `x` and `y`.
 	**/
-	public inline function prependTranslate( x : Float, y : Float ) {
+	public inline function prependTranslate(x:Float, y:Float) {
 		this.x += a * x + c * y;
 		this.y += b * x + d * y;
 	}
@@ -164,7 +175,7 @@ class MTransform {
 		applies translation transform on X-axis to Matrix by resulting `x` and `y`.
 		Equivalent of `matrix.x += matrix.a * x`.
 	**/
-	public inline function prependTranslateX( x : Float ) {
+	public inline function prependTranslateX(x:Float) {
 		this.x += a * x;
 	}
 
@@ -173,7 +184,7 @@ class MTransform {
 		applies translation transform on Y-axis to Matrix by resulting `y`.
 		Equivalent of `matrix.y += matrix.d * y`.
 	**/
-	public inline function prependTranslateY( y : Float ) {
+	public inline function prependTranslateY(y:Float) {
 		this.y += d * y;
 	}
 
@@ -182,7 +193,7 @@ class MTransform {
 		Matrix can be the target of of it's own `multiply`.
 		Keep in mind that order of matrixes matter in concatenation.
 	**/
-	public function multiply( a : MTransform, b : MTransform ) {
+	public function multiply(a:MTransform, b:MTransform) {
 		var aa = a.a, ab = a.b, ac = a.c, ad = a.d, ax = a.x, ay = a.y;
 		var ba = b.a, bb = b.b, bc = b.c, bd = b.d, bx = b.x, by = b.y;
 		this.a = aa * ba + ab * bc;
@@ -196,7 +207,7 @@ class MTransform {
 	/**
 		Multiplies the `a`, `c` and `x` by given `sx` and `b`, `d` and `y` by `sy`.
 	**/
-	public inline function scale( sx : Float, sy : Float ) {
+	public inline function scale(sx:Float, sy:Float) {
 		a *= sx;
 		c *= sx;
 		x *= sx;
@@ -208,7 +219,7 @@ class MTransform {
 	/**
 		Multiplies the `a`, `c` and `x` by given `sx`.
 	**/
-	public inline function scaleX( sx : Float ) {
+	public inline function scaleX(sx:Float) {
 		a *= sx;
 		c *= sx;
 		x *= sx;
@@ -217,7 +228,7 @@ class MTransform {
 	/**
 		Multiplies the `b`, `d` and `y` by `sy`.
 	**/
-	public inline function scaleY( sy : Float ) {
+	public inline function scaleY(sy:Float) {
 		b *= sy;
 		d *= sy;
 		y *= sy;
@@ -226,7 +237,7 @@ class MTransform {
 	/**
 		Applies rotation transform to the Matrix by given `angle`.
 	**/
-	public function rotate(angle: Float) {
+	public function rotate(angle:Float) {
 		tmp.initRotate(angle);
 		multiply(this, tmp);
 	}
@@ -234,7 +245,7 @@ class MTransform {
 	/**
 		Applies skewing transform to the Matrix by given `sx` and `sy`.
 	**/
-	public function skew( sx : Float, sy : Float ) {
+	public function skew(sx:Float, sy:Float) {
 		var aa = this.a, ab = this.b, ac = this.c, ad = this.d, ax = this.x, ay = this.y;
 		// [1, tan(sx), 0]
 		// [tan(sy), 1, 0]
@@ -251,7 +262,7 @@ class MTransform {
 	/**
 		Applies skewing transform on X-axis to the Matrix by given `sx`.
 	**/
-	public function skewX( sx : Float ) {
+	public function skewX(sx:Float) {
 		// [1, tan(sx), 0]
 		// [0, 1      , 0]
 		var bc = Math.tan(sx);
@@ -263,7 +274,7 @@ class MTransform {
 	/**
 		Applies skewing transform on Y-axis to the Matrix by given `sy`.
 	**/
-	public function skewY( sy : Float ) {
+	public function skewY(sy:Float) {
 		// [1, tan(sx), 0]
 		// [tan(sy), 1, 0]
 		var bb = Math.tan(sy);
@@ -290,18 +301,19 @@ class MTransform {
 		Returns a Point with `x` and `y` of the Matrix.
 		@param p Optional Point instance to use. Otherwise returns new instance.
 	**/
-	public inline function applyPosTo( ?v : MVectorFloat2 ) {
-		if( v == null ) v = new MVectorFloat2();
-        v.init(x, y);
+	public inline function applyPosTo(?v:MVectorFloat2) {
+		if (v == null)
+			v = new MVectorFloat2();
+		v.init(x, y);
 		return v;
 	}
 
 	@:dox(hide)
 	public function toString() {
-        return '[ ${a} | ${b} ]\n[ ${c} | ${d} ]\n[ ${x} | ${y} ]';
+		return '[ ${a} | ${b} ]\n[ ${c} | ${d} ]\n[ ${x} | ${y} ]';
 	}
 
-	public inline function applyTo(other: MTransform):MTransform {
+	public inline function applyTo(other:MTransform):MTransform {
 		other.a = a;
 		other.b = b;
 		other.c = c;

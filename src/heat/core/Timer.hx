@@ -1,73 +1,79 @@
 package heat.core;
 
 class Timer {
-    public var acc(default, null) = 0.;
-    var overflow = 0.;
-    public var period:Null<Float>;
-    public var mode:TimerMode = ONCE;
-    var isPaused = false;
-    public var isDone(get, never):Bool;
-    public var justFinished(default, null) = false;
-    
+	public var acc(default, null) = 0.;
 
-    public function new(period:Float) {
-        this.period = period;
-    }
+	var overflow = 0.;
 
-    public inline function pause() {
-        isPaused = true;
-    }
+	public var period:Null<Float>;
+	public var mode:TimerMode = ONCE;
 
-    public inline function resume() {
-        isPaused = false;
-    }
+	var isPaused = false;
 
-    public function update(dt:Float) {
-        justFinished = false;
-        if (isPaused) return;
-        if (acc >= period) {
-            switch mode {
-                case REPEATING: {
-                    acc = overflow;
-                    overflow = 0;
-                }
-                case ONCE: {}
-            }
-        }
-        if (acc < period) {
-            acc += dt;
-            runningHandler();
-            if (acc >= period) {
-                justFinished = true;
-                overflow = acc % period;
-                acc = period;
-                doneHandler();
-            }
-        }
-    }
+	public var isDone(get, never):Bool;
+	public var justFinished(default, null) = false;
 
-    function get_isDone():Bool {
-        return acc >= period;
-    }
+	public function new(period:Float) {
+		this.period = period;
+	}
 
-    public function reset() {
-        acc = 0;
-    }
+	public inline function pause() {
+		isPaused = true;
+	}
 
-    function runningHandler() {
-        onRunning();
-    }
+	public inline function resume() {
+		isPaused = false;
+	}
 
-    function doneHandler() {
-        onDone();
-    }
+	public function update(dt:Float) {
+		justFinished = false;
+		if (isPaused)
+			return;
+		if (acc >= period) {
+			switch mode {
+				case REPEATING:
+					{
+						acc = overflow;
+						overflow = 0;
+					}
+				case ONCE:
+					{}
+			}
+		}
+		if (acc < period) {
+			acc += dt;
+			runningHandler();
+			if (acc >= period) {
+				justFinished = true;
+				overflow = acc % period;
+				acc = period;
+				doneHandler();
+			}
+		}
+	}
 
-    public dynamic function onDone() {}
+	function get_isDone():Bool {
+		return acc >= period;
+	}
 
-    public dynamic function onRunning() {}
+	public function reset() {
+		acc = 0;
+	}
+
+	function runningHandler() {
+		onRunning();
+	}
+
+	function doneHandler() {
+		onDone();
+	}
+
+	public dynamic function onDone() {}
+
+	public dynamic function onRunning() {}
 }
 
 enum TimerMode {
-    ONCE;
-    REPEATING;
+	ONCE;
+	REPEATING;
 }

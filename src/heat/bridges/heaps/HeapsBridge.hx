@@ -340,8 +340,7 @@ class HeapsBridge {
 								drawTile();
 							} else if (Std.isOfType(other, h2d.Graphics)) {
 								final graphics = (other : h2d.Graphics);
-								graphics.setPosition(transform.x - textureRegion.ox, 
-									transform.y - textureRegion.oy);
+								graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
 								@:privateAccess graphics.sync(scene.renderer);
 								@:privateAccess graphics.draw(scene.renderer);
 							} else {

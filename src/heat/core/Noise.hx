@@ -1,3 +1,5 @@
 package heat.core;
 
-enum Noise { Noise; }
+enum Noise {
+	Noise;
+}

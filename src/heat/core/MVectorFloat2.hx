@@ -16,6 +16,10 @@ abstract MVectorFloat2(MVector2<Float>) from MVector2<Float> to MVector2<Float>
         return this;
     }
 
+    public function initFrom(source:IVector2<Float>):MVectorFloat2 {
+        return this.initFrom(source);
+    }
+
     public inline function lengthSquared():Float {
         return this.x*this.x + this.y*this.y;
     }
@@ -213,5 +217,12 @@ abstract MVectorFloat2(MVector2<Float>) from MVector2<Float> to MVector2<Float>
 
     public inline function isCloseByPartsWith(other:IVector2<Float>):MVectorBool2 {
         return new MVectorBool2(this.x - other.x <= Math.FP_ERR() && this.y - other.y <= Math.FP_ERR());
+    }
+
+    public function clamp(max:Float):MVectorFloat2 {
+        if (lengthSquared() > max*max) {
+            normalize().multiplyBy(max);
+        }
+        return this;
     }
 }

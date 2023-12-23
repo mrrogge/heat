@@ -23,6 +23,8 @@ class HeapsBridge {
 	var cameraQuery = new ComQuery();
 	var cameraSubjectQuery = new ComQuery();
 
+	var resizeFlag = false;
+
 	public function new(onReady:() -> Void) {
 		this.onReady = onReady;
 
@@ -74,11 +76,12 @@ class HeapsBridge {
 		});
 
 		scene = new h2d.Scene();
-		window.addResizeEvent(scene.checkResize);
+		window.addResizeEvent(() -> {
+			resizeFlag = true;
+		});
 
 		// sets the scene to a fixed size with space around it to fill the window. Hardcoding this for now, should eventually configurable via game UI
 		scene.scaleMode = LetterBox(window.width, window.height, true, Center, Center);
-
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
 
 		#if js
@@ -285,6 +288,10 @@ class HeapsBridge {
 	function render() {
 		static final tile = @:privateAccess new h2d.Tile(null, 0, 0, 32, 32);
 
+		if (resizeFlag) {
+			scene.checkResize();
+		}
+
 		engine.begin();
 		scene.renderer.begin();
 
@@ -297,6 +304,7 @@ class HeapsBridge {
 		for (cameraId in cameraQuery.result) {
 			final camCom = spaceStd.com.camera.get(cameraId);
 			final camTX = spaceStd.com.absPosTransform.get(cameraId);
+			scene.camera.clipViewport = true;
 			scene.camera.setPosition(camTX.x, camTX.y);
 			scene.camera.setAnchor(0.5, 0.5);
 			scene.camera.setScale(camCom.scale, camCom.scale);

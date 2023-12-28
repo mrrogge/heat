@@ -20,7 +20,7 @@ class StandardPlugin {
 		childrenLists is Array<heat.ecs.EntityId>,
 		transform is heat.core.MTransform,
 		absPosTransform is heat.core.MTransform,
-		camera is heat.core.Camera,
+		camera is heat.camera.Camera,
 		drawOrder is Int,
 		names is String,
 		textureRegions is heat.texture.TextureRegion,
@@ -29,6 +29,7 @@ class StandardPlugin {
 		dimensions is heat.core.Dimension,
 		audioSources is heat.audio.AudioSource,
 		audioInstances is heat.audio.AudioInstance,
+		text is String,
 	];
 }
 #end

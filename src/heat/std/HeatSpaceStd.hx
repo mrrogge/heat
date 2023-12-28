@@ -10,21 +10,28 @@ class HeatSpaceStd extends HeatSpace implements I_UsesHeatStandardPlugin {
 
 	// TODO: BalancedTree might be more appropriate for parent/child relationship
 
-	public function setParent(child:EntityId, parent:EntityId) {
+	public function setParent(child:EntityId, parent:Null<EntityId>) {
 		var currentParent = com.parents.get(child);
 		if (currentParent == parent) {
+			// already set to correct parent, nothing to do
 			return;
 		} else if (currentParent != null) {
+			// remove this child from the old parent's list
 			var currentParentChildren = com.childrenLists.get(currentParent);
 			if (currentParentChildren != null) {
 				currentParentChildren.remove(child);
 			}
 		}
-		com.parents.set(child, parent);
-		if (!com.childrenLists.exists(parent)) {
-			com.childrenLists.set(parent, []);
+		if (parent != null) {
+			com.parents.set(child, parent);
+			// init empty children list if this is the parent's first child
+			if (!com.childrenLists.exists(parent)) {
+				com.childrenLists.set(parent, []);
+			}
+			com.childrenLists.get(parent).push(child);
+		} else {
+			com.parents.remove(parent);
 		}
-		com.childrenLists.get(parent).push(child);
 	}
 
 	override function update(dt:Float) {
@@ -34,7 +41,7 @@ class HeatSpaceStd extends HeatSpace implements I_UsesHeatStandardPlugin {
 
 	// TODO: guard against parent/child cycles somehow
 	function syncAbsPos() {
-		final rootQuery = new ComQuery().with(com.transform).with(com.absPosTransform).without(com.parents);
+		final rootQuery = comQueryPool.get().with(com.transform).with(com.absPosTransform).without(com.parents);
 		rootQuery.run();
 		for (id in rootQuery.result) {
 			final rootTx = com.transform.get(id);
@@ -48,6 +55,7 @@ class HeatSpaceStd extends HeatSpace implements I_UsesHeatStandardPlugin {
 				syncAbsPosInner(childId, rootAbsTx);
 			}
 		}
+		comQueryPool.put(rootQuery);
 	}
 
 	function syncAbsPosInner(id:EntityId, parentAbsTx:MTransform) {

@@ -39,6 +39,7 @@ typedef VectorInt2 = heat.core.VectorInt2;
 // ecs
 typedef ComMap<T> = heat.ecs.ComMap<T>;
 typedef ComQuery = heat.ecs.ComQuery;
+typedef ComQueryPool = heat.ecs.ComQueryPool;
 typedef EntityId = heat.ecs.EntityId;
 
 // event

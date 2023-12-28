@@ -29,6 +29,7 @@ class StandardPlugin {
 		dimensions is heat.core.Dimension,
 		audioSources is heat.audio.AudioSource,
 		audioInstances is heat.audio.AudioInstance,
+		text is String,
 	];
 }
 #end

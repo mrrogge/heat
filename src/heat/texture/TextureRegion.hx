@@ -11,12 +11,13 @@ class TextureRegion {
 	public var ox:Float;
 	public var oy:Float;
 
-	public function new(handle:TextureHandle, x = 0., y = 0., w = 1., h = 1., ox = 0., oy = 0.) {
+	public function new(handle:TextureHandle = None, x = 0., y = 0., w = 1., h = 1., ox = 0., oy = 0.) {
 		this.handle = handle;
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
+		// ox/oy are offsets from the origin position to where the upper-left corner of the texture is rendered. For example, if ox=w/2 and oy=h/2, the texture will be centered over the position component.
 		this.ox = ox;
 		this.oy = oy;
 	}
@@ -40,9 +41,9 @@ class TextureRegion {
 	public function clone():TextureRegion {
 		final newHandle = switch (handle) {
 			case Color(color): TextureHandle.Color(color.clone());
-			// TODO: no built-in Path cloning? boo. do this later
-			case File(path): throw new haxe.exceptions.NotImplementedException();
-			case Other(other): throw new haxe.exceptions.NotImplementedException();
+			case File(path): TextureHandle.File(new haxe.io.Path(path.toString()));
+			case Other(other): TextureHandle.Other(other);
+			case None: TextureHandle.None;
 		}
 		return new TextureRegion(newHandle, x, y, w, h);
 	}

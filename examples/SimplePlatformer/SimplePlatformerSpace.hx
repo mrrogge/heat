@@ -57,6 +57,7 @@ class SimplePlatformerSpace extends heat.std.HeatSpaceStd {
 		heroTexture.center();
 		game.heroMap.set(heroID, Noise);
 		game.heroMoveStates.set(heroID, new HeroMoveState());
+		game.worldObjects.set(heroID, Noise);
 	}
 
 	override function update(dt:Float) {

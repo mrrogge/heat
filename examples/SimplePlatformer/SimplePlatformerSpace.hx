@@ -6,27 +6,6 @@ class SimplePlatformerSpace extends heat.std.HeatSpaceStd {
 	final transformQuery = new ComQuery();
 	final heroQuery = new ComQuery();
 
-	function makeCameraBundle(id:EntityId, template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {
-		makeTransformBundle(id, template);
-		com.camera.set(id, new heat.core.Camera());
-		com.drawOrder.set(id, 0);
-	}
-
-	function makeTransformBundle(id:EntityId, template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {
-		final tx = new MTransform();
-		com.transform.set(id, tx);
-		com.absPosTransform.set(id, tx.clone());
-		switch (template) {
-			case DEFAULT:
-				{}
-			case CUSTOM(template):
-				{
-					tx.x = template.x;
-					tx.y = template.y;
-				}
-		}
-	}
-
 	public function new() {
 		super();
 
@@ -35,21 +14,21 @@ class SimplePlatformerSpace extends heat.std.HeatSpaceStd {
 		heroQuery.with(game.heroMap);
 
 		final worldCamId = getNextID();
-		makeCameraBundle(worldCamId);
+		CameraSys.makeCameraBundle(this, worldCamId);
 		final worldCamFilterQuery = new ComQuery().with(game.worldObjects);
 		com.camera.get(worldCamId).idFilter = (id:EntityId) -> {
 			return worldCamFilterQuery.checkId(id);
 		};
 
 		final uiCamId = getNextID();
-		makeCameraBundle(uiCamId);
+		CameraSys.makeCameraBundle(this, uiCamId);
 		final uiCamFilterQuery = new ComQuery().with(game.uiObjects);
 		com.camera.get(uiCamId).idFilter = (id:EntityId) -> {
 			return uiCamFilterQuery.checkId(id);
 		};
 
 		final heroID = getNextID();
-		makeTransformBundle(heroID, CUSTOM({x: 10, y: 10}));
+		TransformSys.makeTransformBundle(this, heroID, CUSTOM({x: 10, y: 10}));
 		com.drawOrder.set(heroID, 0);
 		final heroTexture = new TextureRegion(None, 0, 0, 32, 48);
 		com.textureRegions.set(heroID, heroTexture);

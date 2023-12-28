@@ -2,6 +2,9 @@ package heat;
 
 using heat.core.MathTools;
 
+// camera
+typedef CameraSys = heat.camera.CameraSys;
+
 // core
 typedef Camera = heat.core.Camera;
 typedef Circle = heat.core.Circle;
@@ -56,3 +59,6 @@ typedef KeyEventKind = heat.key.KeyEventKind;
 // texture
 typedef TextureHandle = heat.texture.TextureHandle;
 typedef TextureRegion = heat.texture.TextureRegion;
+
+// transform
+typedef TransformSys = heat.transform.TransformSys;

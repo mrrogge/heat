@@ -24,6 +24,11 @@ class StandardPlugin {
 		drawOrder is Int,
 		names is String,
 		textureRegions is heat.texture.TextureRegion,
+		flexBoxes is heat.ui.FlexBox,
+		flexBoxItems is heat.ui.FlexBoxItem,
+		dimensions is heat.core.Dimension,
+		audioSources is heat.audio.AudioSource,
+		audioInstances is heat.audio.AudioInstance,
 	];
 }
 #end

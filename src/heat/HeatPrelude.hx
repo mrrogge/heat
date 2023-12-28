@@ -39,6 +39,7 @@ typedef VectorInt2 = heat.core.VectorInt2;
 // ecs
 typedef ComMap<T> = heat.ecs.ComMap<T>;
 typedef ComQuery = heat.ecs.ComQuery;
+typedef ComQueryPool = heat.ecs.ComQueryPool;
 typedef EntityId = heat.ecs.EntityId;
 
 // event
@@ -51,9 +52,6 @@ typedef Slot<T> = heat.event.Slot<T>;
 // key
 typedef KeyCode = heat.key.KeyCode;
 typedef KeyEventKind = heat.key.KeyEventKind;
-
-// std
-typedef HeatSpaceStd = heat.std.HeatSpaceStd;
 
 // texture
 typedef TextureHandle = heat.texture.TextureHandle;

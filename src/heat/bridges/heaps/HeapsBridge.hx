@@ -331,12 +331,13 @@ class HeapsBridge {
 				switch (textureRegion.handle) {
 					case Color(color):
 						{
-							@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB()));
+							@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB(), color.a));
 							drawTile();
 						}
 					case File(path):
 						{
-							throw new haxe.exceptions.NotImplementedException();
+							@:privateAccess tile.setTexture(hxd.Res.load(path.toString()).toTexture());
+							drawTile();
 						}
 					case Other(other):
 						{
@@ -348,19 +349,26 @@ class HeapsBridge {
 								drawTile();
 							} else if (Std.isOfType(other, h2d.Graphics)) {
 								final graphics = (other : h2d.Graphics);
-								graphics.setPosition(transform.x - textureRegion.ox, 
-									transform.y - textureRegion.oy);
+								graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
 								@:privateAccess graphics.sync(scene.renderer);
 								@:privateAccess graphics.draw(scene.renderer);
 							} else {
 								throw new haxe.Exception('unexpected texture handle type');
 							}
 						}
+					case None:
+						{}
 				}
 			}
 			scene.camera.exit(scene.renderer);
 		}
 		scene.renderer.end();
 		engine.end();
+	}
+
+	function updateAudio() {
+		static final query = new ComQuery();
+		query.clear();
+		// TODO
 	}
 }

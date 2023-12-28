@@ -39,7 +39,7 @@ class MRect {
 		return dx * dx + dy * dy;
 	}
 
-    public function clone():MRect {
-        return new MRect(x, y, w, h);
-    }
+	public function clone():MRect {
+		return new MRect(x, y, w, h);
+	}
 }

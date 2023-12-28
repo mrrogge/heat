@@ -1,59 +1,86 @@
 using heat.HeatPrelude;
 
 @:build(SimplePlatformerPlugin.apply())
-class SimplePlatformerSpace extends HeatSpaceStd {
-    final cameraQuery = new ComQuery();
-    final transformQuery = new ComQuery();
-    final heroQuery = new ComQuery();
+class SimplePlatformerSpace extends heat.std.HeatSpaceStd {
+	final cameraQuery = new ComQuery();
+	final transformQuery = new ComQuery();
+	final heroQuery = new ComQuery();
 
-    public function new() {
-        super();
+	function makeCameraBundle(id:EntityId, template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {
+		makeTransformBundle(id, template);
+		com.camera.set(id, new heat.core.Camera());
+		com.drawOrder.set(id, 0);
+	}
 
-        cameraQuery.with(com.camera).with(com.absPosTransform);
-        transformQuery.with(com.transform);
-        heroQuery.with(game.heroMap);
+	function makeTransformBundle(id:EntityId, template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {
+		final tx = new MTransform();
+		com.transform.set(id, tx);
+		com.absPosTransform.set(id, tx.clone());
+		switch (template) {
+			case DEFAULT:
+				{}
+			case CUSTOM(template):
+				{
+					tx.x = template.x;
+					tx.y = template.y;
+				}
+		}
+	}
 
-        final camId = getNextID();
-        final camTX = new heat.core.MTransform();
-        camTX.initTranslate(0, 0);
-        com.camera.set(camId, new heat.core.Camera());
-        com.drawOrder.set(camId, 0);
-        com.transform.set(camId, camTX);
-        com.absPosTransform.set(camId, camTX.clone());
+	public function new() {
+		super();
 
-        final heroID = getNextID();
-        final tx1 = new heat.core.MTransform();
-        tx1.initTranslate(10, 10);
-        com.transform.set(heroID, tx1);
-        com.absPosTransform.set(heroID, tx1.clone());
-        com.drawOrder.set(heroID, 0);
-        com.textureRegions.set(heroID, new heat.texture.TextureRegion(
-            heat.texture.TextureHandle.Other(hxd.Res.girl_png), 0, 0, 32, 48
-        ));
-        game.heroMap.set(heroID, Noise);
-        game.heroMoveStates.set(heroID, new HeroMoveState());
-    }
+		cameraQuery.with(com.camera).with(com.absPosTransform);
+		transformQuery.with(com.transform);
+		heroQuery.with(game.heroMap);
 
-    override function update(dt:Float) {
-        HeroSys.update(this, dt);
-        syncAbsPos();
-    }
+		final worldCamId = getNextID();
+		makeCameraBundle(worldCamId);
+		final worldCamFilterQuery = new ComQuery().with(game.worldObjects);
+		com.camera.get(worldCamId).idFilter = (id:EntityId) -> {
+			return worldCamFilterQuery.checkId(id);
+		};
 
-    override function onKeyPressed(keyCode:KeyCode) {
-        HeroSys.onKeyEvent(this, keyCode, PRESSED);
-        trace(keyCode);
-    }
+		final uiCamId = getNextID();
+		makeCameraBundle(uiCamId);
+		final uiCamFilterQuery = new ComQuery().with(game.uiObjects);
+		com.camera.get(uiCamId).idFilter = (id:EntityId) -> {
+			return uiCamFilterQuery.checkId(id);
+		};
 
-    override function onKeyReleased(keyCode:KeyCode) {
-        HeroSys.onKeyEvent(this, keyCode, RELEASED);
-        trace(keyCode);
-    }
+		final heroID = getNextID();
+		makeTransformBundle(heroID, CUSTOM({x: 10, y: 10}));
+		com.drawOrder.set(heroID, 0);
+		final heroTexture = new TextureRegion(None, 0, 0, 32, 48);
+		com.textureRegions.set(heroID, heroTexture);
+		heroTexture.handle = TextureHandle.Other(hxd.Res.girl_png);
+		heroTexture.center();
+		game.heroMap.set(heroID, Noise);
+		game.heroMoveStates.set(heroID, new HeroMoveState());
+		game.worldObjects.set(heroID, Noise);
+	}
 
-    function translateCamera(x: Float, y:Float) {
-        cameraQuery.run();
-        for (id in cameraQuery.result) {
-            com.absPosTransform.get(id).x += x;
-            com.absPosTransform.get(id).y += y;
-        }
-    }
+	override function update(dt:Float) {
+		HeroSys.update(this, dt);
+		heat.ui.FlexBoxSys.update(this, dt);
+		syncAbsPos();
+	}
+
+	override function onKeyPressed(keyCode:KeyCode) {
+		HeroSys.onKeyEvent(this, keyCode, PRESSED);
+		trace(keyCode);
+	}
+
+	override function onKeyReleased(keyCode:KeyCode) {
+		HeroSys.onKeyEvent(this, keyCode, RELEASED);
+		trace(keyCode);
+	}
+
+	function translateCamera(x:Float, y:Float) {
+		cameraQuery.run();
+		for (id in cameraQuery.result) {
+			com.absPosTransform.get(id).x += x;
+			com.absPosTransform.get(id).y += y;
+		}
+	}
 }

@@ -54,13 +54,11 @@ abstract Color(_Color) from _Color to _Color {
 			+ (Std.int((this.r * 255)) << 24);
 	}
 
-    public inline function asRGB():Int {
-		return (Std.int((this.b * 255)))
-			+ (Std.int((this.g * 255)) << 8)
-			+ (Std.int((this.r * 255)) << 16);
+	public inline function asRGB():Int {
+		return (Std.int(this.b * 255) + (Std.int(this.g * 255) << 8) + (Std.int(this.r * 255) << 16));
 	}
 
-    public inline function clone():Color {
-        return Color.RGBA(this.r, this.g, this.b, this.a);
-    }
+	public inline function clone():Color {
+		return Color.RGBA(this.r, this.g, this.b, this.a);
+	}
 }

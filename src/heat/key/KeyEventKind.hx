@@ -1,6 +1,6 @@
 package heat.key;
 
 enum KeyEventKind {
-    PRESSED;
-    RELEASED;
+	PRESSED;
+	RELEASED;
 }

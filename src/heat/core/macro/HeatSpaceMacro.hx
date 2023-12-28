@@ -145,7 +145,9 @@ class HeatSpaceMacro {
 					return Ok(TAnonymous(result));
 				}
 			case Err(err):
-				return Err(err);
+				{
+					return Err(err);
+				}
 		}
 	}
 }

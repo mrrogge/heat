@@ -26,20 +26,18 @@ class HeroSys {
             }
             dirVector.normalize();                            
             final accel = moveState.topSpeed / moveState.timeToTopSpeedSec;
-            final dx = dirVector.x * accel * dt;  
-            final dy = dirVector.y * accel * dt;
-            moveState.vel.x += dx;
-            moveState.vel.y += dy;
-            if (dx == 0) {
-                moveState.vel.x -= Math.sign(moveState.vel.x) * moveState.topSpeed / moveState.timeToStopSec * dt;
+            dirVector.multiplyBy(accel).multiplyBy(dt);
+            moveState.vel.addWith(dirVector);
+            moveState.vel.clamp(moveState.topSpeed);
+            if (dirVector.x == 0 && dirVector.y == 0) {
+                final decel = moveState.topSpeed / moveState.timeToStopSec * dt;
+                moveState.vel.multiplyBy(1 - Math.min(1, decel / moveState.vel.length()));
             }
-            if (dy == 0) {
-                moveState.vel.y -= Math.sign(moveState.vel.y) * moveState.topSpeed / moveState.timeToStopSec * dt;
-            }
-            final dvx = moveState.vel.x - moveState.prevVel.x; 
-            final dvy = moveState.vel.y - moveState.prevVel.y;
-            tx.x += moveState.vel.x*dt + dvx/2*dt*dt;
-            tx.y += moveState.vel.y*dt + dvy/2*dt*dt;
+            static var dv:MVectorFloat2;
+            dv = dv ?? new MVectorFloat2();
+            dv.initFrom(moveState.vel).subWith(moveState.prevVel);
+            tx.x += moveState.vel.x*dt + dv.x/2*dt*dt;
+            tx.y += moveState.vel.y*dt + dv.y/2*dt*dt;
             moveState.vel.applyTo(moveState.prevVel);
         }
     }

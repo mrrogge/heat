@@ -3,6 +3,9 @@ package heat.core;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
+using haxe.macro.TypeTools;
+using haxe.macro.ComplexTypeTools;
+
 #if (macro || eval)
 class PluginTools {
 	public static function applyWrapper<T>(cls:Class<T>, comMapExprs:Expr, groupFieldName:String):Array<Field> {
@@ -41,14 +44,6 @@ class PluginTools {
 			try {
 				Context.getType('heat.${interfaceName}');
 			} catch (e:String) {
-				final interfaceFields = switch (heat.core.macro.HeatSpaceMacro.makeComMapFields(comMapExprs, false)) {
-					case Err(err): {
-							Context.error(err, Context.currentPos());
-							return;
-						}
-					case Ok(newFields): newFields;
-				}
-
 				final structType = switch (heat.core.macro.HeatSpaceMacro.makeComMapStructType(comMapExprs)) {
 					case Ok(result): {
 							result;

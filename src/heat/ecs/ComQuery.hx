@@ -9,6 +9,17 @@ class ComQuery {
 		return combined;
 	}
 
+	public static function areEquivalent(query1:ComQuery, query2:ComQuery):Bool {
+		for (i in 0...query1.condArray.length) {
+			final cond1 = query1.condArray[i];
+			final cond2 = query2.condArray[i];
+			if (cond2 == null || !cond1.isEquivalentTo(cond2)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public final result = new Array<EntityId>();
 
 	final condArray = new Array<Condition>();
@@ -101,10 +112,17 @@ class ComQuery {
 		}
 		return newQuery;
 	}
+
+	public function first():Null<EntityId> {
+		run();
+		return result[0];
+	}
 }
 
 private abstract class Condition {
 	public abstract function check(id:EntityId):Bool;
+
+	public abstract function isEquivalentTo(other:Condition):Bool;
 }
 
 private class WithCondition extends Condition {
@@ -117,6 +135,14 @@ private class WithCondition extends Condition {
 	public function check(id:EntityId):Bool {
 		return comMap.exists(id);
 	}
+
+	public function isEquivalentTo(other:Condition):Bool {
+		final other = Std.downcast(other, WithCondition);
+		if (other == null) {
+			return false;
+		}
+		return comMap == other.comMap;
+	}
 }
 
 private class WithoutCondition extends Condition {
@@ -128,6 +154,14 @@ private class WithoutCondition extends Condition {
 
 	public function check(id:EntityId):Bool {
 		return !comMap.exists(id);
+	}
+
+	public function isEquivalentTo(other:Condition):Bool {
+		final other = Std.downcast(other, WithoutCondition);
+		if (other == null) {
+			return false;
+		}
+		return comMap == other.comMap;
 	}
 }
 
@@ -143,6 +177,14 @@ private class WhereEqualToCondition<T> extends Condition {
 	public function check(id:EntityId):Bool {
 		return comMap.exists(id) && comMap[id] == value;
 	}
+
+	public function isEquivalentTo(other:Condition):Bool {
+		final other = Std.downcast(other, WhereEqualToCondition);
+		if (other == null) {
+			return false;
+		}
+		return comMap == other.comMap && value == other.value;
+	}
 }
 
 private class WhereNotEqualToCondition<T> extends Condition {
@@ -156,5 +198,13 @@ private class WhereNotEqualToCondition<T> extends Condition {
 
 	public function check(id:EntityId):Bool {
 		return !comMap.exists(id) || comMap[id] != value;
+	}
+
+	public function isEquivalentTo(other:Condition):Bool {
+		final other = Std.downcast(other, WhereNotEqualToCondition);
+		if (other == null) {
+			return false;
+		}
+		return comMap == other.comMap && value == other.value;
 	}
 }

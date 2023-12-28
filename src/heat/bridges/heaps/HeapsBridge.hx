@@ -19,6 +19,7 @@ class HeapsBridge {
 
 	var scene:Null<h2d.Scene>;
 	var dummyDrawable:Null<h2d.Drawable>;
+	var dummyText:Null<h2d.Text>;
 
 	var cameraQuery = new ComQuery();
 	var cameraSubjectQuery = new ComQuery();
@@ -83,6 +84,7 @@ class HeapsBridge {
 		// sets the scene to a fixed size with space around it to fill the window. Hardcoding this for now, should eventually configurable via game UI
 		scene.scaleMode = LetterBox(window.width, window.height, true, Center, Center);
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
+		dummyText = new h2d.Text(hxd.res.DefaultFont.get(), scene);
 
 		#if js
 		hxd.Res.initEmbed();
@@ -315,60 +317,68 @@ class HeapsBridge {
 					continue;
 				final transform = spaceStd.com.absPosTransform.get(subjectId);
 				final textureRegion = spaceStd.com.textureRegions.get(subjectId);
-				if (textureRegion == null)
-					continue;
-				dummyDrawable.setPosition(transform.x, transform.y);
-				@:privateAccess dummyDrawable.sync(scene.renderer);
+				if (textureRegion != null) {
+					dummyDrawable.setPosition(transform.x, transform.y);
+					@:privateAccess dummyDrawable.sync(scene.renderer);
+					inline function drawTile() {
+						tile.setPosition(textureRegion.x, textureRegion.y);
+						tile.setSize(textureRegion.w, textureRegion.h);
+						tile.dx = -textureRegion.ox;
+						tile.dy = -textureRegion.oy;
+						scene.renderer.drawTile(dummyDrawable, tile);
+					}
 
-				inline function drawTile() {
-					tile.setPosition(textureRegion.x, textureRegion.y);
-					tile.setSize(textureRegion.w, textureRegion.h);
-					tile.dx = -textureRegion.ox;
-					tile.dy = -textureRegion.oy;
-					scene.renderer.drawTile(dummyDrawable, tile);
+					switch (textureRegion.handle) {
+						case Color(color):
+							{
+								@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB(), color.a));
+								drawTile();
+							}
+						case File(path):
+							{
+								@:privateAccess tile.setTexture(hxd.Res.load(path.toString()).toTexture());
+								drawTile();
+							}
+						case Other(other):
+							{
+								if (Std.isOfType(other, hxd.res.Image)) {
+									@:privateAccess tile.setTexture((other : hxd.res.Image).toTexture());
+									drawTile();
+								} else if (Std.isOfType(other, h3d.mat.Texture)) {
+									@:privateAccess tile.setTexture((other : h3d.mat.Texture));
+									drawTile();
+								} else if (Std.isOfType(other, h2d.Graphics)) {
+									final graphics = (other : h2d.Graphics);
+									graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
+									@:privateAccess graphics.sync(scene.renderer);
+									@:privateAccess graphics.draw(scene.renderer);
+								} else {
+									throw new haxe.Exception('unexpected texture handle type');
+								}
+							}
+						case None:
+							{}
+					}
 				}
 
-				switch (textureRegion.handle) {
-					case Color(color):
-						{
-							@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB(), color.a));
-							drawTile();
-						}
-					case File(path):
-						{
-							@:privateAccess tile.setTexture(hxd.Res.load(path.toString()).toTexture());
-							drawTile();
-						}
-					case Other(other):
-						{
-							if (Std.isOfType(other, hxd.res.Image)) {
-								@:privateAccess tile.setTexture((other : hxd.res.Image).toTexture());
-								drawTile();
-							} else if (Std.isOfType(other, h3d.mat.Texture)) {
-								@:privateAccess tile.setTexture((other : h3d.mat.Texture));
-								drawTile();
-							} else if (Std.isOfType(other, h2d.Graphics)) {
-								final graphics = (other : h2d.Graphics);
-								graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
-								@:privateAccess graphics.sync(scene.renderer);
-								@:privateAccess graphics.draw(scene.renderer);
-							} else {
-								throw new haxe.Exception('unexpected texture handle type');
-							}
-						}
-					case None:
-						{}
+				final text = spaceStd.com.text.get(subjectId);
+				if (text != null) {
+					dummyText.setPosition(transform.x, transform.y);
+					@:privateAccess dummyText.sync(scene.renderer);
+					dummyText.text = text;
+					@:privateAccess dummyText.draw(scene.renderer);
 				}
 			}
 			scene.camera.exit(scene.renderer);
+			scene.renderer.end();
+			engine.end();
 		}
-		scene.renderer.end();
-		engine.end();
-	}
 
-	function updateAudio() {
-		static final query = new ComQuery();
-		query.clear();
-		// TODO
+		function updateAudio() {
+			static final query = new ComQuery();
+			query.clear();
+			// TODO
+		}
+		function drawTextureRegion() {}
 	}
 }

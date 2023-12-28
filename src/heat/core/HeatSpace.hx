@@ -12,6 +12,8 @@ class HeatSpace implements IHeatSpace {
 
 	public var onWindowResizeRequestSignal:ISignal<heat.core.window.Window.WindowResizeRequest>;
 
+	public final comQueryPool = new ComQueryPool();
+
 	public function new() {
 		this.onKeyPressedSlot = new Slot(onKeyPressed);
 		this.onKeyReleasedSlot = new Slot(onKeyReleased);

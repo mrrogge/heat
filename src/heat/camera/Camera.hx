@@ -1,4 +1,4 @@
-package heat.core;
+package heat.camera;
 
 using heat.HeatPrelude;
 

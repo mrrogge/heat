@@ -1,4 +1,4 @@
-package heat.core.macro;
+package heat.ecs;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -7,10 +7,13 @@ using haxe.macro.ExprTools;
 using haxe.macro.TypeTools;
 using haxe.macro.ComplexTypeTools;
 using haxe.macro.MacroStringTools;
+
+import heat.core.Result;
+
 using heat.core.Result.ResultTools;
 
-#if (macro || eval)
-class HeatSpaceMacro {
+#if macro
+class EcsMacros {
 	macro static public function addComMaps(comMapsExpr:Expr):Array<Field> {
 		final fields = Context.getBuildFields();
 		switch (makeComMapFields(comMapsExpr, true)) {
@@ -149,6 +152,30 @@ class HeatSpaceMacro {
 					return Err(err);
 				}
 		}
+	}
+
+	public static function joinComMapsExpr(expr1:Expr, expr2:Expr):heat.core.Result<Expr, String> {
+		final exprArray1 = switch (expr1.expr) {
+			case EArrayDecl(values): {
+					values;
+				}
+			default: {
+					return Err('Expression should be array of "identifier is type" sub-expressions.');
+				}
+		}
+		final exprArray2 = switch (expr2.expr) {
+			case EArrayDecl(values): {
+					values;
+				}
+			default: {
+					return Err('Expression should be array of "identifier is type" sub-expressions.');
+				}
+		}
+		final joined = exprArray1.concat(exprArray2);
+		return Ok({
+			expr: EArrayDecl(joined),
+			pos: Context.currentPos()
+		});
 	}
 }
 #end

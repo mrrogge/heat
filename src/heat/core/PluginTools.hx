@@ -6,18 +6,26 @@ import haxe.macro.Context;
 using haxe.macro.TypeTools;
 using haxe.macro.ComplexTypeTools;
 
-#if (macro || eval)
+import heat.ecs.EcsMacros;
+
+#if macro
 class PluginTools {
+	public static function makeInterface<T>(cls:Class<T>, name:String):TypeDefinition {
+		final td = macro interface $name {};
+		td.pack.push('heat');
+		return td;
+	}
+
 	public static function applyWrapper<T>(cls:Class<T>, comMapExprs:Expr, groupFieldName:String):Array<Field> {
 		var fields = Context.getBuildFields();
-		final newFields = switch (heat.core.macro.HeatSpaceMacro.makeComMapObjectFields(comMapExprs)) {
+		final newFields = switch (heat.ecs.EcsMacros.makeComMapObjectFields(comMapExprs)) {
 			case Err(err): {
 					return Context.error(err, Context.currentPos());
 				}
 			case Ok(newFields): newFields;
 		}
 
-		final structType = switch (heat.core.macro.HeatSpaceMacro.makeComMapStructType(comMapExprs)) {
+		final structType = switch (heat.ecs.EcsMacros.makeComMapStructType(comMapExprs)) {
 			case Ok(result): result;
 			case Err(err): {
 					return Context.error(err, Context.currentPos());
@@ -44,7 +52,7 @@ class PluginTools {
 			try {
 				Context.getType('heat.${interfaceName}');
 			} catch (e:String) {
-				final structType = switch (heat.core.macro.HeatSpaceMacro.makeComMapStructType(comMapExprs)) {
+				final structType = switch (heat.ecs.EcsMacros.makeComMapStructType(comMapExprs)) {
 					case Ok(result): {
 							result;
 						}

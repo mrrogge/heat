@@ -40,6 +40,7 @@ typedef VectorFloat2 = heat.core.VectorFloat2;
 typedef VectorInt2 = heat.core.VectorInt2;
 
 // ecs
+typedef Bundle = heat.ecs.Bundle;
 typedef ComMap<T> = heat.ecs.ComMap<T>;
 typedef ComQuery = heat.ecs.ComQuery;
 typedef ComQueryPool = heat.ecs.ComQueryPool;

@@ -20,6 +20,22 @@ class ComQuery {
 		return true;
 	}
 
+	public static function fromComMapTuple2(tuple:ComMap.ComMapTuple2<Any, Any>):ComQuery {
+		return new ComQuery().with(tuple.e0).with(tuple.e1);
+	}
+
+	public static function fromComMapTuple3(tuple:ComMap.ComMapTuple3<Any, Any, Any>):ComQuery {
+		return new ComQuery().with(tuple.e0).with(tuple.e1).with(tuple.e2);
+	}
+
+	public static function fromComMapTuple4(tuple:ComMap.ComMapTuple4<Any, Any, Any, Any>):ComQuery {
+		return new ComQuery().with(tuple.e0).with(tuple.e1).with(tuple.e2).with(tuple.e3);
+	}
+
+	public static function fromComMapTuple5(tuple:ComMap.ComMapTuple5<Any, Any, Any, Any, Any>):ComQuery {
+		return new ComQuery().with(tuple.e0).with(tuple.e1).with(tuple.e2).with(tuple.e3).with(tuple.e4);
+	}
+
 	public final result = new Array<EntityId>();
 
 	final condArray = new Array<Condition>();

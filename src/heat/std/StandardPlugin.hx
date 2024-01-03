@@ -5,7 +5,7 @@ import haxe.macro.Context;
 
 using heat.core.PluginTools;
 
-#if (macro || eval)
+#if macro
 class StandardPlugin {
 	public macro static function applyStandardPlugin():Array<Field> {
 		return StandardPlugin.applyWrapper(comMapExprs, "com");
@@ -15,7 +15,7 @@ class StandardPlugin {
 		StandardPlugin.initWrapper(comMapExprs, "I_UsesHeatStandardPlugin", "com");
 	}
 
-	private static final comMapExprs = macro [
+	public static final comMapExprs = macro [
 		parents is heat.ecs.EntityId,
 		childrenLists is Array<heat.ecs.EntityId>,
 		transform is heat.core.MTransform,

@@ -3,16 +3,29 @@ package heat.std;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
-using heat.core.PluginTools;
+import heat.core.PluginTools;
 
 #if macro
 class StandardPlugin {
-	public macro static function applyStandardPlugin():Array<Field> {
-		return StandardPlugin.applyWrapper(comMapExprs, "com");
+	public macro static function apply():Array<Field> {
+		final fields = Context.getBuildFields();
+		switch (PluginTools.addGroupFieldToBuildFields(fields, "com", comMapExprs)) {
+			case Err(err): return Context.error(err, Context.currentPos());
+			case Ok(_): {}
+		}
+		return fields;
 	}
 
 	public macro static function init():Void {
-		StandardPlugin.initWrapper(comMapExprs, "I_UsesHeatStandardPlugin", "com");
+		PluginTools.initWrapper("I_UsesHeatStandardPlugin", (name:String)->{
+			final td = PluginTools.makeInterface(name);
+			switch (PluginTools.addGroupFieldToBuildFields(td.fields, "com", comMapExprs)) {
+				case Err(err): return Context.error(err, Context.currentPos());
+				case Ok(_): {}
+			}
+			return td;
+
+		});
 	}
 
 	public static final comMapExprs = macro [

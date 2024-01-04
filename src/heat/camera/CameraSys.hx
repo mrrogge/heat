@@ -1,6 +1,6 @@
 package heat.camera;
 
-using heat.HeatPrelude;
+import heat.ecs.EntityId;
 
 class CameraSys {
     public static function makeCameraBundle(space:heat.I_UsesHeatStandardPlugin, id:EntityId, template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {

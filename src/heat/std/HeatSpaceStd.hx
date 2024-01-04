@@ -2,7 +2,7 @@ package heat.std;
 
 using heat.HeatPrelude;
 
-@:build(heat.std.StandardPlugin.applyStandardPlugin())
+@:build(heat.std.StandardPlugin.apply())
 class HeatSpaceStd extends HeatSpace implements I_UsesHeatStandardPlugin {
 	public function new() {
 		super();

@@ -1,7 +1,7 @@
 package heat.ui;
 
 class FlexBoxSys {
-	public static function update(space:heat.std.HeatSpaceStd, dt:Float) {
+	public static function update(space:heat.I_UsesHeatStandardPlugin, dt:Float) {
 		final rootQuery = space.comQueryPool.get()
 			.with(space.com.flexBoxes)
 			.with(space.com.childrenLists)

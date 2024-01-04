@@ -1,7 +1,8 @@
 using heat.HeatPrelude;
 
 @:build(SimplePlatformerPlugin.apply())
-class SimplePlatformerSpace extends heat.std.HeatSpaceStd {
+@:build(heat.std.StandardPlugin.apply())
+class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandardPlugin implements heat.I_UsesSimplePlatformerPlugin {
 	final cameraQuery = new ComQuery();
 	final transformQuery = new ComQuery();
 	final heroQuery = new ComQuery();

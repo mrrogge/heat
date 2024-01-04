@@ -1,16 +1,33 @@
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
-using heat.core.PluginTools;
+import heat.core.PluginTools;
 
 #if (macro || eval)
 class SimplePlatformerPlugin {
 	public static macro function apply():Array<Field> {
-		return SimplePlatformerPlugin.applyWrapper(comMapExprs, "game");
+		final fields = Context.getBuildFields();
+		switch (PluginTools.addGroupFieldToBuildFields(fields, "game", comMapExprs)) {
+			case Err(err): return Context.error(err, Context.currentPos());
+			case Ok(_): {}
+		}
+		return fields;
 	}
 
 	public static function init():Void {
-		SimplePlatformerPlugin.initWrapper(comMapExprs, "I_UsesSimplePlatformerPlugin", "game");
+		PluginTools.initWrapper("I_UsesSimplePlatformerPlugin", (name:String)->{
+			final td = PluginTools.makeInterface(name);
+			switch (PluginTools.addGroupFieldToBuildFields(td.fields, "com", heat.std.StandardPlugin.comMapExprs)) {
+				case Err(err): return Context.error(err, Context.currentPos());
+				case Ok(_): {}
+			}
+			switch (PluginTools.addGroupFieldToBuildFields(td.fields, "game", comMapExprs)) {
+				case Err(err): return Context.error(err, Context.currentPos());
+				case Ok(_): {}
+			}
+			return td;
+
+		});
 	}
 
 	static final comMapExprs = macro [

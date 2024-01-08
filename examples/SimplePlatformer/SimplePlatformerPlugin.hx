@@ -1,32 +1,33 @@
+#if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-
 import heat.core.PluginTools;
+import heat.std.StandardPlugin;
 
-#if (macro || eval)
 class SimplePlatformerPlugin {
 	public static macro function apply():Array<Field> {
 		final fields = Context.getBuildFields();
 		switch (PluginTools.addGroupFieldToBuildFields(fields, "game", comMapExprs)) {
-			case Err(err): return Context.error(err, Context.currentPos());
-			case Ok(_): {}
+			case Err(err):
+				return Context.error(err, Context.currentPos());
+			case Ok(_):
+				{}
 		}
 		return fields;
 	}
 
 	public static function init():Void {
-		PluginTools.initWrapper("I_UsesSimplePlatformerPlugin", (name:String)->{
+		PluginTools.initWrapper("I_UsesSimplePlatformerPlugin", (name:String) -> {
 			final td = PluginTools.makeInterface(name);
-			switch (PluginTools.addGroupFieldToBuildFields(td.fields, "com", heat.std.StandardPlugin.comMapExprs)) {
+			switch (PluginTools.addGroupFieldToTypeDef(td, "com", StandardPlugin.comMapExprs)) {
 				case Err(err): return Context.error(err, Context.currentPos());
 				case Ok(_): {}
 			}
-			switch (PluginTools.addGroupFieldToBuildFields(td.fields, "game", comMapExprs)) {
+			switch (PluginTools.addGroupFieldToTypeDef(td, "game", comMapExprs)) {
 				case Err(err): return Context.error(err, Context.currentPos());
 				case Ok(_): {}
 			}
 			return td;
-
 		});
 	}
 

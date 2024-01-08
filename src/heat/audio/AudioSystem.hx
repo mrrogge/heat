@@ -1,6 +1,6 @@
 package heat.audio;
 
-using heat.HeatPrelude;
+import heat.std.HeatSpaceStd;
 
 class AudioSystem {
 	public static function play(space:heat.std.HeatSpaceStd, id:EntityId) {

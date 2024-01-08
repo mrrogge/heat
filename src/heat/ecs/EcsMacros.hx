@@ -1,5 +1,6 @@
 package heat.ecs;
 
+#if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
@@ -12,7 +13,8 @@ import heat.core.Result;
 
 using heat.core.Result.ResultTools;
 
-#if macro
+import heat.ecs.ComMap;
+
 class EcsMacros {
 	macro static public function addComMaps(comMapsExpr:Expr):Array<Field> {
 		final fields = Context.getBuildFields();
@@ -48,7 +50,7 @@ class EcsMacros {
 
 		This is intended for augmenting `HeatSpace` subclasses with user-defined components.
 	**/
-	public static function makeComMapField(comMapExpr:Expr, ?withInit:Bool):heat.core.Result<Field, String> {
+	public static function makeComMapField(comMapExpr:Expr, ?withInit:Bool):Result<Field, String> {
 		switch (comMapExpr.expr) {
 			case EIs(e, t):
 				{
@@ -76,7 +78,7 @@ class EcsMacros {
 		}
 	}
 
-	public static function makeComMapFields(comMapsExpr:Expr, ?withInit:Bool):heat.core.Result<Array<Field>, String> {
+	public static function makeComMapFields(comMapsExpr:Expr, ?withInit:Bool):Result<Array<Field>, String> {
 		final comMapsExprArray = switch (comMapsExpr.expr) {
 			case EArrayDecl(values): {
 					values;
@@ -88,7 +90,7 @@ class EcsMacros {
 		return Result.all(comMapsExprArray.map((e) -> makeComMapField(e, withInit)));
 	}
 
-	public static function makeComMapObjectField(comMapExpr:Expr):heat.core.Result<ObjectField, String> {
+	public static function makeComMapObjectField(comMapExpr:Expr):Result<ObjectField, String> {
 		switch (comMapExpr.expr) {
 			case EIs(e, t):
 				{
@@ -120,7 +122,7 @@ class EcsMacros {
 		}
 	}
 
-	public static function makeComMapObjectFields(comMapsExpr:Expr):heat.core.Result<Array<ObjectField>, String> {
+	public static function makeComMapObjectFields(comMapsExpr:Expr):Result<Array<ObjectField>, String> {
 		final comMapsExprArray = switch (comMapsExpr.expr) {
 			case EArrayDecl(values): {
 					values;
@@ -132,7 +134,7 @@ class EcsMacros {
 		return Result.all(comMapsExprArray.map((e) -> makeComMapObjectField(e)));
 	}
 
-	public static function makeComMapStructType(comMapsExpr:Expr):heat.core.Result<ComplexType, String> {
+	public static function makeComMapStructType(comMapsExpr:Expr):Result<ComplexType, String> {
 		final comMapsExprArray = switch (comMapsExpr.expr) {
 			case EArrayDecl(values): {
 					values;
@@ -154,7 +156,7 @@ class EcsMacros {
 		}
 	}
 
-	public static function joinComMapsExpr(expr1:Expr, expr2:Expr):heat.core.Result<Expr, String> {
+	public static function joinComMapsExpr(expr1:Expr, expr2:Expr):Result<Expr, String> {
 		final exprArray1 = switch (expr1.expr) {
 			case EArrayDecl(values): {
 					values;

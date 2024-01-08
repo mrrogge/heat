@@ -2,7 +2,7 @@ package heat.core.macro;
 
 import haxe.macro.Context;
 
-#if (macro || eval)
+#if macro
 @:keep
 class TupleBuilder {
 	public static function build(arity:Int):Void {

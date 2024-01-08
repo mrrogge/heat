@@ -1,8 +1,12 @@
 package heat.ui;
 
+import heat.ecs.ComQueryPool;
+
 class FlexBoxSys {
+	static final comQueryPool = new ComQueryPool();
+
 	public static function update(space:heat.I_UsesHeatStandardPlugin, dt:Float) {
-		final rootQuery = space.comQueryPool.get()
+		final rootQuery = comQueryPool.get()
 			.with(space.com.flexBoxes)
 			.with(space.com.childrenLists)
 			.with(space.com.dimensions)
@@ -13,7 +17,7 @@ class FlexBoxSys {
 			final fbDim = space.com.dimensions.get(id);
 			final fbTX = space.com.transform.get(id);
 			final children = space.com.childrenLists.get(id);
-			final childQuery = space.comQueryPool.get()
+			final childQuery = comQueryPool.get()
 				.whereEqualTo(space.com.parents, id)
 				.with(space.com.flexBoxItems)
 				.with(space.com.dimensions)
@@ -56,8 +60,8 @@ class FlexBoxSys {
 						}
 				}
 			}
-			space.comQueryPool.put(childQuery);
+			comQueryPool.put(childQuery);
 		}
-		space.comQueryPool.put(rootQuery);
+		comQueryPool.put(rootQuery);
 	}
 }

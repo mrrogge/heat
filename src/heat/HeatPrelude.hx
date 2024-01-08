@@ -12,7 +12,6 @@ typedef CameraSys = heat.camera.CameraSys;
 typedef Circle = heat.core.Circle;
 typedef Color = heat.core.Color;
 typedef HeatSpace = heat.core.HeatSpace;
-typedef IHeatSpace = heat.core.IHeatSpace;
 typedef ILineSegment = heat.core.ILineSegment;
 typedef IVector2<T> = heat.core.IVector2<T>;
 typedef LineSegment = heat.core.LineSegment;

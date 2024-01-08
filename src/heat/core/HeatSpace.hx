@@ -7,7 +7,7 @@ import heat.event.ISignal;
 import heat.event.SignalEmitter;
 import heat.ecs.ComQueryPool;
 
-class HeatSpace implements IHeatSpace {
+class HeatSpace {
 	public var lastID(default, null):Null<EntityId> = null;
 
 	public var onKeyPressedSlot:Slot<KeyCode>;

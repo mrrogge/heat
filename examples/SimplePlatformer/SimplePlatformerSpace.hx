@@ -1,4 +1,5 @@
 using heat.HeatPrelude;
+using heat.transform.TransformSys;
 
 @:build(SimplePlatformerPlugin.apply())
 @:build(heat.std.StandardPlugin.apply())
@@ -43,7 +44,7 @@ class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandard
 	override function update(dt:Float) {
 		HeroSys.update(this, dt);
 		heat.ui.FlexBoxSys.update(this, dt);
-		syncAbsPos();
+		this.syncAbsPos();
 	}
 
 	override function onKeyPressed(keyCode:KeyCode) {

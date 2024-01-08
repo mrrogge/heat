@@ -1,32 +1,22 @@
 package heat.core;
 
+#if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
 using haxe.macro.TypeTools;
 using haxe.macro.ComplexTypeTools;
 
-// import heat.ecs.EcsMacros;
-// import heat.ecs.EntityId;
-// import heat.event.Slot;
-// import heat.event.ISignal;
-// import heat.ecs.ComQueryPool;
-
-
-
-#if macro
 class PluginTools {
 	public static function makeInterface(name:String):TypeDefinition {
 		final td = macro interface $name {
-			// public var lastID(default, null):Null<EntityId>;
-			// public var onKeyPressedSlot:Slot<KeyCode>;
-			// public var onKeyReleasedSlot:Slot<KeyCode>;		
-			// public var onWindowResizeRequestSignal:ISignal<heat.core.window.Window.WindowResizeRequest>;
-			// public final comQueryPool:ComQueryPool;
-			// public function getNextID():EntityId;
-			// public function update(dt:Float);
-			// function onKeyPressed(keyCode:KeyCode);
-			// function onKeyReleased(keyCode:KeyCode);
+			public var lastID(default, null):Null<heat.ecs.EntityId>;
+			public var onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
+			public var onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
+			public var onWindowResizeRequestSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
+			public final comQueryPool:heat.ecs.ComQueryPool;
+			public function getNextID():heat.ecs.EntityId;
+			public function update(dt:Float):Void;
 		};
 		td.pack = ['heat'];
 		return td;
@@ -49,10 +39,7 @@ class PluginTools {
 		td.fields.push({
 			name: fieldName,
 			access: [APublic, AFinal],
-			kind: FVar(structType, {
-				expr: EObjectDecl(fields),
-				pos: Context.currentPos(),
-			}),
+			kind: FVar(structType),
 			pos: Context.currentPos(),
 		});
 		return Ok(td);
@@ -115,7 +102,7 @@ class PluginTools {
 		return fields;
 	}
 
-	public static function initWrapper(name:String, buildTypeDef:(name:String)->TypeDefinition) {
+	public static function initWrapper(name:String, buildTypeDef:(name:String) -> TypeDefinition) {
 		Context.onAfterInitMacros(() -> {
 			try {
 				Context.getType('heat.${name}');

@@ -1,30 +1,30 @@
 package heat.std;
 
+#if (macro || eval)
 import haxe.macro.Expr;
 import haxe.macro.Context;
-
 import heat.core.PluginTools;
 
-#if macro
 class StandardPlugin {
 	public macro static function apply():Array<Field> {
 		final fields = Context.getBuildFields();
 		switch (PluginTools.addGroupFieldToBuildFields(fields, "com", comMapExprs)) {
-			case Err(err): return Context.error(err, Context.currentPos());
-			case Ok(_): {}
+			case Err(err):
+				return Context.error(err, Context.currentPos());
+			case Ok(_):
+				{}
 		}
 		return fields;
 	}
 
 	public macro static function init():Void {
-		PluginTools.initWrapper("I_UsesHeatStandardPlugin", (name:String)->{
+		PluginTools.initWrapper("I_UsesHeatStandardPlugin", (name:String) -> {
 			final td = PluginTools.makeInterface(name);
-			switch (PluginTools.addGroupFieldToBuildFields(td.fields, "com", comMapExprs)) {
+			switch (PluginTools.addGroupFieldToTypeDef(td, "com", comMapExprs)) {
 				case Err(err): return Context.error(err, Context.currentPos());
 				case Ok(_): {}
 			}
 			return td;
-
 		});
 	}
 

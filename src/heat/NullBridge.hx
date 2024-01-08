@@ -1,6 +1,6 @@
 package heat;
 
-using heat.HeatPrelude;
+import heat.core.HeatSpace;
 
 class NullBridge {
 	var space:Null<HeatSpace>;

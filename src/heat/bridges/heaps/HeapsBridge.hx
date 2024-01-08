@@ -1,7 +1,6 @@
 package heat.bridges.heaps;
 
 import heat.key.KeyCode;
-import heat.core.IHeatSpace;
 import heat.event.Slot;
 import heat.ecs.EntityId;
 import heat.event.Signal;

@@ -1,6 +1,11 @@
 package heat.core;
 
-using heat.HeatPrelude;
+import heat.ecs.EntityId;
+import heat.event.Slot;
+import heat.key.KeyCode;
+import heat.event.ISignal;
+import heat.event.SignalEmitter;
+import heat.ecs.ComQueryPool;
 
 class HeatSpace implements IHeatSpace {
 	public var lastID(default, null):Null<EntityId> = null;

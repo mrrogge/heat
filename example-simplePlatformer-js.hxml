@@ -1,0 +1,7 @@
+-cp src
+-cp examples/SimplePlatformer
+extraParams.hxml
+-L heaps
+--js bin/heat-simple-platformer.js
+--macro SimplePlatformerPlugin.init()
+--main SimplePlatformer

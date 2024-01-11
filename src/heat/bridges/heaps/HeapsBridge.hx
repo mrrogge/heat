@@ -374,9 +374,6 @@ class HeapsBridge {
 		scene.renderer.end();
 		engine.end();
 
-		scene.renderer.end();
-		engine.end();
-
 		trace(engine.drawCalls);
 
 		function updateAudio() {

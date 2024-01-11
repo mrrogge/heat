@@ -371,6 +371,8 @@ class HeapsBridge {
 			spriteBatch.clearIDs();
 			scene.camera.exit(scene.renderer);
 		}
+		scene.renderer.end();
+		engine.end();
 
 		scene.renderer.end();
 		engine.end();

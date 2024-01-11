@@ -9,6 +9,7 @@ import heat.ecs.ComQuery;
 class HeapsBridge {
 	static var KEYCODE_MAP:Null<Map<Int, KeyCode>>;
 
+	@:allow(heat.bridges.heaps.HeatSpriteBatch)
 	var space:Null<heat.I_UsesHeatStandardPlugin>;
 	var engine:Null<h3d.Engine>;
 	var engineIsReady = false;
@@ -20,9 +21,11 @@ class HeapsBridge {
 
 	var onWindowResizeRequestSlot:Slot<heat.core.window.Window.WindowResizeRequest>;
 
+	@:allow(heat.bridges.heaps.HeatSpriteBatch)
 	var scene:Null<h2d.Scene>;
 	var dummyDrawable:Null<h2d.Drawable>;
 	var dummyText:Null<h2d.Text>;
+	var spriteBatch:Null<HeatSpriteBatch>;
 
 	var cameraQuery = new ComQuery();
 	var cameraSubjectQuery = new ComQuery();
@@ -88,6 +91,8 @@ class HeapsBridge {
 		scene.scaleMode = LetterBox(window.width, window.height, true, Center, Center);
 		dummyDrawable = @:privateAccess new h2d.Drawable(scene);
 		dummyText = new h2d.Text(hxd.res.DefaultFont.get(), scene);
+
+		spriteBatch = new HeatSpriteBatch(this);
 
 		#if js
 		hxd.Res.initEmbed();
@@ -319,37 +324,24 @@ class HeapsBridge {
 					continue;
 				final transform = space.com.absPosTransform.get(subjectId);
 				final textureRegion = space.com.textureRegions.get(subjectId);
-				if (textureRegion != null) {
-					dummyDrawable.setPosition(transform.x, transform.y);
-					@:privateAccess dummyDrawable.sync(scene.renderer);
-					inline function drawTile() {
-						tile.setPosition(textureRegion.x, textureRegion.y);
-						tile.setSize(textureRegion.w, textureRegion.h);
-						tile.dx = -textureRegion.ox;
-						tile.dy = -textureRegion.oy;
-						scene.renderer.drawTile(dummyDrawable, tile);
-					}
-
-					switch (textureRegion.handle) {
-						case Color(color):
-							{
-								@:privateAccess tile.setTexture(h3d.mat.Texture.fromColor(color.asRGB(), color.a));
-								drawTile();
-							}
-						case File(path):
-							{
-								@:privateAccess tile.setTexture(hxd.Res.load(path.toString()).toTexture());
-								drawTile();
-							}
-						case Other(other):
-							{
-								if (Std.isOfType(other, hxd.res.Image)) {
-									@:privateAccess tile.setTexture((other : hxd.res.Image).toTexture());
-									drawTile();
-								} else if (Std.isOfType(other, h3d.mat.Texture)) {
-									@:privateAccess tile.setTexture((other : h3d.mat.Texture));
-									drawTile();
-								} else if (Std.isOfType(other, h2d.Graphics)) {
+				if (transform == null || textureRegion == null) {
+					continue;
+				}
+				switch (textureRegion.handle) {
+					case Color(_), File(_):
+						{
+							spriteBatch.addID(subjectId);
+						}
+					case Other(other):
+						{
+							final isBatchable = Std.isOfType(other, hxd.res.Image) || Std.isOfType(other, h3d.mat.Texture);
+							if (isBatchable) {
+								spriteBatch.addID(subjectId);
+							} else {
+								if (Std.isOfType(other, h2d.Graphics)) {
+									@:privateAccess spriteBatch.sync(scene.renderer);
+									@:privateAccess spriteBatch.draw(scene.renderer);
+									spriteBatch.clearIDs();
 									final graphics = (other : h2d.Graphics);
 									graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
 									@:privateAccess graphics.sync(scene.renderer);
@@ -358,23 +350,32 @@ class HeapsBridge {
 									throw new haxe.Exception('unexpected texture handle type');
 								}
 							}
-						case None:
-							{}
-					}
+						}
+					case None:
+						{}
 				}
 
 				final text = space.com.text.get(subjectId);
 				if (text != null) {
+					@:privateAccess spriteBatch.sync(scene.renderer);
+					@:privateAccess spriteBatch.draw(scene.renderer);
+					spriteBatch.clearIDs();
 					dummyText.setPosition(transform.x, transform.y);
 					@:privateAccess dummyText.sync(scene.renderer);
 					dummyText.text = text;
 					@:privateAccess dummyText.draw(scene.renderer);
 				}
 			}
+			@:privateAccess spriteBatch.sync(scene.renderer);
+			@:privateAccess spriteBatch.draw(scene.renderer);
+			spriteBatch.clearIDs();
 			scene.camera.exit(scene.renderer);
-			scene.renderer.end();
-			engine.end();
 		}
+
+		scene.renderer.end();
+		engine.end();
+
+		trace(engine.drawCalls);
 
 		function updateAudio() {
 			static final query = new ComQuery();

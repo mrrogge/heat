@@ -39,6 +39,17 @@ class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandard
 		game.heroMap.set(heroID, Noise);
 		game.heroMoveStates.set(heroID, new HeroMoveState());
 		game.worldObjects.set(heroID, Noise);
+
+		for (_ in 0...100) {
+			final id = getNextID();
+			TransformSys.makeTransformBundle(this, id, CUSTOM({x: Math.random() * 100, y: Math.random() * 100}));
+			com.drawOrder.set(id, 0);
+			final texture = new TextureRegion(None, 0, 0, 32, 48);
+			com.textureRegions.set(id, texture);
+			texture.handle = TextureHandle.Other(hxd.Res.girl_png);
+			texture.center();
+			game.worldObjects.set(id, Noise);
+		}
 	}
 
 	override function update(dt:Float) {

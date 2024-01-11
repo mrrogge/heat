@@ -372,9 +372,9 @@ class HeapsBridge {
 				}
 			}
 			scene.camera.exit(scene.renderer);
-			scene.renderer.end();
-			engine.end();
 		}
+		scene.renderer.end();
+		engine.end();
 
 		function updateAudio() {
 			static final query = new ComQuery();

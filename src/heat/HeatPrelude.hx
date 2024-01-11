@@ -15,6 +15,7 @@ typedef HeatSpace = heat.core.HeatSpace;
 typedef ILineSegment = heat.core.ILineSegment;
 typedef IVector2<T> = heat.core.IVector2<T>;
 typedef LineSegment = heat.core.LineSegment;
+typedef Map2D<K1, K2, V> = heat.core.Map2D<K1, K2, V>;
 typedef MathTools = heat.core.MathTools;
 typedef MLineSegment = heat.core.MLineSegment;
 typedef MRect = heat.core.MRect;

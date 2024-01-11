@@ -2,63 +2,90 @@ package heat.core;
 
 using heat.core.MathTools;
 
-private class _Color {
-	public var r(get, never):Float;
-
-	inline function get_r():Float
-		return _r;
-
-	public var g(get, never):Float;
-
-	inline function get_g():Float
-		return _g;
-
-	public var b(get, never):Float;
-
-	inline function get_b():Float
-		return _b;
-
-	public var a(get, never):Float;
-
-	inline function get_a():Float
-		return _a;
-
-	final _r:Float;
-	final _g:Float;
-	final _b:Float;
-	final _a:Float;
-
-	public function new(r = 0., g = 0., b = 0., a = 0.) {
-		_r = Math.limit(r, 0., 1.);
-		_g = Math.limit(g, 0., 1.);
-		_b = Math.limit(b, 0., 1.);
-		_a = Math.limit(a, 0., 1.);
-	}
-}
-
-@:forward
-@:forwardStatics
-abstract Color(_Color) from _Color to _Color {
-	public static inline function RGBA(r = 0., g = 0., b = 0., a = 0.):Color {
-		return new _Color(r, g, b, a);
+abstract Color(Int) from Int to Int {
+	inline public static function ARGB(color:Int):Color {
+		return color;
 	}
 
-	public static inline function RGB(r = 0., g = 0., b = 0.,):Color {
-		return new _Color(r, g, b, 1.);
+	inline public static function RGB(color:Int):Color {
+		return color & 0x00FFFFFF;
 	}
 
-	public inline function asRGBA():Int {
-		return Std.int((this.a * 255))
-			+ (Std.int((this.b * 255)) << 8)
-			+ (Std.int((this.g * 255)) << 16)
-			+ (Std.int((this.r * 255)) << 24);
+	public static var RED(get, never):Color;
+
+	inline static function get_RED():Color {
+		return 0xFFFF0000;
 	}
 
-	public inline function asRGB():Int {
-		return (Std.int(this.b * 255) + (Std.int(this.g * 255) << 8) + (Std.int(this.r * 255) << 16));
+	public static var GREEN(get, never):Color;
+
+	inline static function get_GREEN():Color {
+		return 0xFF00FF00;
 	}
 
-	public inline function clone():Color {
-		return Color.RGBA(this.r, this.g, this.b, this.a);
+	public static var BLUE(get, never):Color;
+
+	inline static function get_BLUE():Color {
+		return 0xFF0000FF;
+	}
+
+	public static var WHITE(get, never):Color;
+
+	inline static function get_WHITE():Color {
+		return 0xFFFFFFFF;
+	}
+
+	public static var BLACK(get, never):Color;
+
+	inline static function get_BLACK():Color {
+		return 0xFF000000;
+	}
+
+	public inline function new(colorARGB:Int) {
+		this = colorARGB;
+	}
+
+	public var r(get, set):Int;
+
+	inline function get_r():Int {
+		return (this >> 16) & 0xFF;
+	}
+
+	inline function set_r(r:Int):Int {
+		this = (this & 0xFF00FFFF) | ((r & 0xFF) << 16);
+		return r;
+	}
+
+	public var g(get, set):Int;
+
+	inline function get_g():Int {
+		return (this >> 8) & 0xFF;
+	}
+
+	inline function set_g(g:Int):Int {
+		this = (this & 0xFFFF00FF) | ((g & 0xFF) << 8);
+		return g;
+	}
+
+	public var b(get, set):Int;
+
+	inline function get_b():Int {
+		return this & 0xFF;
+	}
+
+	inline function set_b(b:Int):Int {
+		this = (this & 0xFFFFFF00) | (b & 0xFF);
+		return b;
+	}
+
+	public var a(get, set):Int;
+
+	inline function get_a():Int {
+		return (this >> 24) & 0xFF;
+	}
+
+	inline function set_a(a:Int):Int {
+		this = (this & 0x00FFFFFF) | ((a & 0xFF) << 24);
+		return a;
 	}
 }

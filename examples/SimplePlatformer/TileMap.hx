@@ -3,11 +3,11 @@ using heat.transform.TransformSys;
 
 typedef TileData = {
 	tileId:Int,
-	entityId:EntityId
+	?entityId:EntityId
 }
 
 class TileMap {
-	final tileData:Map2D<Int, Int, TileData> = new Map2D();
+	final tileData:Map<Int, Map<Int, TileData>> = [];
 	final tileSize:VectorFloat2;
 
 	public function new(tileSize:VectorFloat2) {
@@ -23,22 +23,43 @@ class TileMap {
 		}
 	}
 
-	public function build(space:heat.I_UsesHeatStandardPlugin) {
+	public function addTile(colIdx: Int, rowIdx: Int, tileId:Int):TileMap {
+		var cols = tileData.get(colIdx);
+		if (cols == null) {
+			cols = [];
+			tileData.set(colIdx, cols);
+		}
+		if (cols.exists(rowIdx)) {
+			cols.get(rowIdx).tileId = tileId;
+		}
+		else {
+			cols.set(rowIdx, {tileId: tileId});
+		}
+		return this;
+	}
+
+	public function build(space:SimplePlatformerSpace) {
 		final rootId = space.getNextID();
 		space.makeTransformBundle(rootId);
-		for (coords => tileDatum in tileData) {
+		space.game.tileMaps.set(rootId, this);
+		for (colIdx => col in tileData) {
+			for (rowIdx => datum in col) {
 			final id = space.getNextID();
-			space.makeTransformBundle(id, CUSTOM({x: coords.e0 * tileSize.x, y: coords.e1 * tileSize.y}));
+			datum.entityId = id;
+			space.makeTransformBundle(id, CUSTOM({x: colIdx * tileSize.x, y: rowIdx * tileSize.y}));
 			space.setParent(id, rootId);
 			final texRegion = new TextureRegion(None, 0, 0, tileSize.x, tileSize.y, 0, 0);
-			texRegion.handle = tileIdToTexture(tileDatum.tileId);
+			texRegion.handle = tileIdToTexture(datum.tileId);
 			space.com.textureRegions.set(id, texRegion);
+			}
 		}
 	}
 
-	public function applyToTiles(f:(coords:Tuple2<Int, Int>, datum:TileData) -> Void) {
-		for (coords => datum in tileData) {
-			f(coords, datum);
+	public function applyToTiles(f:(colIdx:Int, rowIdx:Int, datum:TileData) -> Void) {
+		for (colIdx => col in tileData) {
+			for (rowIdx => datum in col) {
+				f(colIdx, rowIdx, datum);
+			}
 		}
 	}
 }

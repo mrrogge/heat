@@ -40,7 +40,7 @@ class TextureRegion {
 	**/
 	public function clone():TextureRegion {
 		final newHandle = switch (handle) {
-			case Color(color): TextureHandle.Color(color.clone());
+			case Color(color): TextureHandle.Color(color);
 			case File(path): TextureHandle.File(new haxe.io.Path(path.toString()));
 			case Other(other): TextureHandle.Other(other);
 			case None: TextureHandle.None;

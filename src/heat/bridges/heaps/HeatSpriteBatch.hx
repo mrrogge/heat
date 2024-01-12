@@ -49,7 +49,7 @@ class HeatSpriteBatch extends h2d.Drawable {
 			final texture = switch (textureRegion.handle) {
 				case Color(color):
 					{
-						h3d.mat.Texture.fromColor(color.asRGB(), color.a);
+						h3d.mat.Texture.fromColor(color.asIntRGB(), color.a);
 					}
 				case File(path):
 					{

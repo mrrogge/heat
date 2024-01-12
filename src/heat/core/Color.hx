@@ -88,4 +88,8 @@ abstract Color(Int) from Int to Int {
 		this = (this & 0x00FFFFFF) | ((a & 0xFF) << 24);
 		return a;
 	}
+
+	public inline function asIntRGB() {
+		return this & 0x00FFFFFF;
+	}
 }

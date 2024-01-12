@@ -1,10 +1,10 @@
 package heat.core;
 
 @:forward(clear)
+@:transitive
+@:multiType(@:followWithAbstracts K1)
 abstract Map2D<K1, K2, V>(Map<K1, Map<K2, V>>) from Map<K1, Map<K2, V>> to Map<K1, Map<K2, V>> {
-	public inline function new() {
-		this = new Map();
-	}
+	public function new();
 
 	public inline function get(k1:K1, k2:K2):Null<V> {
 		final v1 = this.get(k1);
@@ -17,7 +17,7 @@ abstract Map2D<K1, K2, V>(Map<K1, Map<K2, V>>) from Map<K1, Map<K2, V>> to Map<K
 	public inline function set(k1:K1, k2:K2, v:V) {
 		var v1 = this.get(k1);
 		if (v1 == null) {
-			v1 = [];
+			v1 = new Map();
 			this.set(k1, v1);
 		}
 		v1.set(k2, v);
@@ -53,6 +53,34 @@ abstract Map2D<K1, K2, V>(Map<K1, Map<K2, V>>) from Map<K1, Map<K2, V>> to Map<K
 
 	// function copy():IMap<K, V>;
 	// function toString():String;
+
+	@:to static inline function toIntMap<K1:Int, K2, V>(t:Map2D<K1, K2, V>):haxe.ds.IntMap<Map<K2, V>> {
+		return new haxe.ds.IntMap<Map<K2, V>>();
+	}
+
+	@:to static inline function toStringMap<K1:String, K2, V>(t:Map2D<K1, K2, V>):haxe.ds.StringMap<Map<K2, V>> {
+		return new haxe.ds.StringMap<Map<K2, V>>();
+	}
+
+	@:to static inline function toEnumValueMapMap<K1:EnumValue, K2, V>(t:Map2D<K1, K2, V>):haxe.ds.EnumValueMap<K1, Map<K2, V>> {
+		return new haxe.ds.EnumValueMap<K1, Map<K2, V>>();
+	}
+
+	@:to static inline function toObjectMap<K1:{}, K2, V>(t:Map2D<K1, K2, V>):haxe.ds.ObjectMap<K1, Map<K2, V>> {
+		return new haxe.ds.ObjectMap<K1, Map<K2, V>>();
+	}
+
+	// @:from static inline function fromStringMap<V>(map:StringMap<V>):Map<String, V> {
+	// 	return cast map;
+	// }
+
+	// @:from static inline function fromIntMap<V>(map:IntMap<V>):Map<Int, V> {
+	// 	return cast map;
+	// }
+
+	// @:from static inline function fromObjectMap<K:{}, V>(map:ObjectMap<K, V>):Map<K, V> {
+	// 	return cast map;
+	// }
 }
 
 class Map2DKeyValueIterator<K1, K2, V> {

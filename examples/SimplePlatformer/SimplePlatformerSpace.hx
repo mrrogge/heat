@@ -50,6 +50,17 @@ class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandard
 			texture.center();
 			game.worldObjects.set(id, Noise);
 		}
+
+		final tileMap = new TileMap(new VectorFloat2(16, 16));
+		var rowIdx = 10;
+		for (colIdx in 0...25) {
+			tileMap.addTile(colIdx, rowIdx, 1);
+		}
+		tileMap.build(this);
+		tileMap.applyToTiles((colIdx:Int, rowIdx:Int, datum:TileMap.TileData) -> {
+			com.drawOrder.set(datum.entityId, 0);
+			game.worldObjects.set(datum.entityId, Noise);
+		});
 	}
 
 	override function update(dt:Float) {

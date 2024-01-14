@@ -23,7 +23,7 @@ class TileMap {
 		}
 	}
 
-	public function addTile(colIdx: Int, rowIdx: Int, tileId:Int):TileMap {
+	public function addTile(colIdx:Int, rowIdx:Int, tileId:Int):TileMap {
 		var cols = tileData.get(colIdx);
 		if (cols == null) {
 			cols = [];
@@ -31,8 +31,7 @@ class TileMap {
 		}
 		if (cols.exists(rowIdx)) {
 			cols.get(rowIdx).tileId = tileId;
-		}
-		else {
+		} else {
 			cols.set(rowIdx, {tileId: tileId});
 		}
 		return this;
@@ -44,13 +43,13 @@ class TileMap {
 		space.game.tileMaps.set(rootId, this);
 		for (colIdx => col in tileData) {
 			for (rowIdx => datum in col) {
-			final id = space.getNextID();
-			datum.entityId = id;
-			space.makeTransformBundle(id, CUSTOM({x: colIdx * tileSize.x, y: rowIdx * tileSize.y}));
-			space.setParent(id, rootId);
-			final texRegion = new TextureRegion(None, 0, 0, tileSize.x, tileSize.y, 0, 0);
-			texRegion.handle = tileIdToTexture(datum.tileId);
-			space.com.textureRegions.set(id, texRegion);
+				final id = space.getNextID();
+				datum.entityId = id;
+				space.makeTransformBundle(id, CUSTOM({x: colIdx * tileSize.x, y: rowIdx * tileSize.y}));
+				space.setParent(id, rootId);
+				final texRegion = new TextureRegion(None, 0, 0, tileSize.x, tileSize.y, 0, 0);
+				texRegion.handle = tileIdToTexture(datum.tileId);
+				space.com.textureRegions.set(id, texRegion);
 			}
 		}
 	}

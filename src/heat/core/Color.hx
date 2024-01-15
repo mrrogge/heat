@@ -41,6 +41,12 @@ abstract Color(Int) from Int to Int {
 		return 0xFF000000;
 	}
 
+	public static var GRAY(get, never):Color;
+
+	inline static function get_GRAY():Color {
+		return 0xFF888888;
+	}
+
 	public inline function new(colorARGB:Int) {
 		this = colorARGB;
 	}

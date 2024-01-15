@@ -133,6 +133,13 @@ class ComQuery {
 		run();
 		return result[0];
 	}
+
+	public function foreach(f:(id:EntityId) -> Void) {
+		run();
+		for (id in result) {
+			f(id);
+		}
+	}
 }
 
 private abstract class Condition {

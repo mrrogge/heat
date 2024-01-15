@@ -37,7 +37,7 @@ class SimplePlatformerPlugin {
 		heroMoveStates is HeroMoveState,
 		uiObjects is heat.core.Noise,
 		worldObjects is heat.core.Noise,
-		tileMaps is TileMap,
+		tileMaps is tilemap.TileMap,
 	];
 }
 #end

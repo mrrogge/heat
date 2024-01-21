@@ -42,4 +42,8 @@ class MRect {
 	public function clone():MRect {
 		return new MRect(x, y, w, h);
 	}
+
+	public function toImmutable():Rect {
+		return new Rect(x, y, w, h);
+	}
 }

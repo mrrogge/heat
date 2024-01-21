@@ -6,26 +6,36 @@ final FP_ERR = 1e-10;
 
 class Rect implements IRect {
 	public var x(get, never):Float;
+
 	final _x:Float;
+
 	inline function get_x():Float {
 		return _x;
 	}
+
 	public var y(get, never):Float;
+
 	final _y:Float;
+
 	inline function get_y():Float {
 		return _y;
 	}
+
 	public var w(get, never):Float;
+
 	final _w:Float;
+
 	inline function get_w():Float {
 		return _w;
 	}
+
 	public var h(get, never):Float;
+
 	final _h:Float;
+
 	inline function get_h():Float {
 		return _h;
 	}
-
 
 	public function new(x = 0., y = 0., w = 1., h = 1.) {
 		this._x = x;
@@ -58,5 +68,9 @@ class Rect implements IRect {
 		var dx = rect1.x - rect2.x + (rect1.w - rect2.w) / 2;
 		var dy = rect1.y - rect2.y + (rect1.h - rect2.h) / 2;
 		return dx * dx + dy * dy;
+	}
+
+	public function toMutable():MRect {
+		return new MRect(x, y, w, h);
 	}
 }

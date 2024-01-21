@@ -24,4 +24,14 @@ class ResultTools {
 		}
 		return Ok(successArray);
 	}
+
+	public static function sure<TSuccess, TFailure>(result:Result<TSuccess, TFailure>):TSuccess {
+		return switch (result) {
+			case Err(err):
+				{
+					throw new haxe.Exception('Unexpected failure: ${err}');
+				}
+			case Ok(result): result;
+		}
+	}
 }

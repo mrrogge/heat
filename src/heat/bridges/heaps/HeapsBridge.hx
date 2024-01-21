@@ -374,7 +374,13 @@ class HeapsBridge {
 		scene.renderer.end();
 		engine.end();
 
-		trace(engine.drawCalls);
+		function getDrawCallCount():Int {
+			return engine.drawCalls;
+		}
+
+		function getFPS():Float {
+			return engine.fps;
+		}
 
 		function updateAudio() {
 			static final query = new ComQuery();

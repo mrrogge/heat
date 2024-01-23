@@ -301,7 +301,7 @@ class MTransform {
 		Returns a Point with `x` and `y` of the Matrix.
 		@param p Optional Point instance to use. Otherwise returns new instance.
 	**/
-	public inline function applyPosTo(?v:MVectorFloat2) {
+	public inline function applyPosTo(?v:MVectorFloat2):MVectorFloat2 {
 		if (v == null)
 			v = new MVectorFloat2();
 		v.init(x, y);

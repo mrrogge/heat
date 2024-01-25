@@ -11,6 +11,8 @@ class TextureRegion {
 	public var ox:Float;
 	public var oy:Float;
 
+	public var a:Float = 1.;
+
 	public function new(handle:TextureHandle = None, x = 0., y = 0., w = 1., h = 1., ox = 0., oy = 0.) {
 		this.handle = handle;
 		this.x = x;

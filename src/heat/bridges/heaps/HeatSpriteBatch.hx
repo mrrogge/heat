@@ -96,7 +96,7 @@ class HeatSpriteBatch extends h2d.Drawable {
 			final r = 1.;
 			final g = 1.;
 			final b = 1.;
-			final a = 1.;
+			final a = textureRegion.a;
 			if (hasRotationScale) {
 				tmp[pos++] = px * ca - py * sa + x;
 				tmp[pos++] = py * ca + px * sa + y;

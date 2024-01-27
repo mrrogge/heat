@@ -88,10 +88,10 @@ class HeatSpriteBatch extends h2d.Drawable {
 			var px = dx * scaleX, py = dy * scaleY;
 			final x = transform.x;
 			final y = transform.y;
-			final u = textureRegion.x / texture.width;
-			final u2 = (textureRegion.x + hx) / texture.width;
-			final v = textureRegion.y / texture.height;
-			final v2 = (textureRegion.y + hy) / texture.height;
+			final u = textureRegion.flippedX ? (textureRegion.x + hx) / texture.width : textureRegion.x / texture.width;
+			final u2 = textureRegion.flippedX ? textureRegion.x / texture.width : (textureRegion.x + hx) / texture.width;
+			final v = textureRegion.flippedY ? (textureRegion.y + hy) / texture.height : textureRegion.y / texture.height;
+			final v2 = textureRegion.flippedY ? textureRegion.y / texture.height : (textureRegion.y + hy) / texture.height;
 			// TODO: individual textureRegion coloring/tinting
 			final r = 1.;
 			final g = 1.;

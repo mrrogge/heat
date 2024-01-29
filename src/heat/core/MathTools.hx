@@ -25,4 +25,12 @@ class MathTools {
 	public static inline function limit(cls:Class<Math>, val:Float, low:Float, high:Float):Float {
 		return (val < low) ? low : ((val > high) ? high : val);
 	}
+
+	public static inline function lerp(cls:Class<Math>, source:Float, low:Float, high:Float):Float {
+		return source * (high - low) + low;
+	}
+
+	public static inline function invLerp(cls:Class<Math>, source:Float, low:Float, high:Float):Float {
+		return (source - low) / (high - low);
+	}
 }

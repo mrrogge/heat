@@ -47,10 +47,11 @@ class TransformSys {
 		} else {
 			space.com.parents.remove(parent);
 		}
+		syncAbsPos(space, child);
 	}
 
 	// TODO: guard against parent/child cycles somehow
-	public static function syncAbsPos(space:I_UsesHeatStandardPlugin) {
+	public static function syncAbsPositions(space:I_UsesHeatStandardPlugin) {
 		final rootQuery = comQueryPool.get()
 			.with(space.com.transform)
 			.with(space.com.absPosTransform)
@@ -65,13 +66,13 @@ class TransformSys {
 				continue;
 			}
 			for (childId in children) {
-				syncAbsPosInner(space, childId, rootAbsTx);
+				syncAbsPositionsInner(space, childId, rootAbsTx);
 			}
 		}
 		comQueryPool.put(rootQuery);
 	}
 
-	static function syncAbsPosInner(space:I_UsesHeatStandardPlugin, id:EntityId, parentAbsTx:MTransform) {
+	static function syncAbsPositionsInner(space:I_UsesHeatStandardPlugin, id:EntityId, parentAbsTx:MTransform) {
 		final tx = space.com.transform.get(id);
 		final absTX = space.com.absPosTransform.get(id);
 		if (tx == null || absTX == null) {
@@ -83,7 +84,23 @@ class TransformSys {
 			return;
 		}
 		for (childId in children) {
-			syncAbsPosInner(space, childId, absTX);
+			syncAbsPositionsInner(space, childId, absTX);
 		}
+	}
+
+	// Syncs the absolute position of a single entity based on its ancestors' positions, if any.
+	public static function syncAbsPos(space:I_UsesHeatStandardPlugin, id:EntityId) {
+		final tx = space.com.transform.get(id);
+		final absTX = space.com.absPosTransform.get(id);
+		if (tx == null || absTX == null) {
+			return;
+		}
+		final parentId = space.com.parents.get(id);
+		if (parentId == null) {
+			return;
+		}
+		syncAbsPos(space, parentId);
+		final parentAbsTX = space.com.absPosTransform.get(parentId);
+		absTX.multiply(parentAbsTX, tx);
 	}
 }

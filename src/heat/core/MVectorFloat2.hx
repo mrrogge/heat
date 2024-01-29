@@ -225,4 +225,16 @@ abstract MVectorFloat2(MVector2<Float>) from MVector2<Float> to MVector2<Float> 
 		}
 		return this;
 	}
+
+	public function rotateTo(angle:Float):MVectorFloat2 {
+		final length = abstract.length();
+		this.init(length * Math.cos(angle), length * Math.sin(angle));
+		return this;
+	}
+
+	public function rotateBy(angleDelta:Float):MVectorFloat2 {
+		final angle = abstract.angle();
+		abstract.rotateTo(angle + angleDelta);
+		return this;
+	}
 }

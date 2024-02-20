@@ -11,7 +11,6 @@ class TransformSys {
 			template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {
 		final tx = new MTransform();
 		space.com.transform.set(id, tx);
-		space.com.absPosTransform.set(id, tx.clone());
 		switch (template) {
 			case DEFAULT:
 				{}
@@ -21,6 +20,7 @@ class TransformSys {
 					tx.y = template.y;
 				}
 		}
+		space.com.absPosTransform.set(id, tx.clone());
 	}
 
 	// TODO: BalancedTree might be more appropriate for parent/child relationship
@@ -95,6 +95,7 @@ class TransformSys {
 		if (tx == null || absTX == null) {
 			return;
 		}
+		tx.applyTo(absTX);
 		final parentId = space.com.parents.get(id);
 		if (parentId == null) {
 			return;

@@ -109,4 +109,24 @@ class TransformSys {
 		final parentAbsTX = space.com.absPosTransform.get(parentId);
 		absTX.multiply(parentAbsTX, tx);
 	}
+
+	public static function setAbsPos(space:I_UsesHeatStandardPlugin, id:EntityId, x:Float, y:Float) {
+		final tx = space.com.transform.get(id);
+		final absTX = space.com.absPosTransform.get(id);
+		if (tx == null || absTX == null) {
+			return;
+		}
+		tx.x = x;
+		tx.y = y;
+		final parentId = space.com.parents.get(id);
+		if (parentId == null) {
+			return;
+		}
+		final parentAbsTx = space.com.absPosTransform.get(parentId);
+		if (parentAbsTx == null) {
+			return;
+		}
+		tx.x -= parentAbsTx.x;
+		tx.y -= parentAbsTx.y;
+	}
 }

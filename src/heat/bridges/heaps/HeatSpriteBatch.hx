@@ -77,7 +77,6 @@ class HeatSpriteBatch extends h2d.Drawable {
 			tmp.grow(pos + 8 * 4);
 			// TODO: rotation from transform hasn't been implemented yet but we're leaving the calcs here for future
 			final angleRadians = 0;
-			// TODO: also need to figure out how scaling works from transform
 			final scaleX = transform.a;
 			final scaleY = transform.d;
 			var ca = Math.cos(angleRadians), sa = Math.sin(angleRadians);

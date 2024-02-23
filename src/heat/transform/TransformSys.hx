@@ -7,8 +7,12 @@ import heat.ecs.ComQueryPool;
 class TransformSys {
 	static final comQueryPool = new ComQueryPool();
 
-	public static function makeTransformBundle(space:heat.I_UsesHeatStandardPlugin, id:EntityId,
-			template:heat.ecs.BundleTemplate<{x:Float, y:Float}> = DEFAULT) {
+	public static function makeTransformBundle(space:heat.I_UsesHeatStandardPlugin, id:EntityId, template:heat.ecs.BundleTemplate<{
+		x:Float,
+		y:Float,
+		a:Float,
+		b:Float
+	}> = DEFAULT) {
 		final tx = new MTransform();
 		space.com.transform.set(id, tx);
 		switch (template) {
@@ -18,6 +22,8 @@ class TransformSys {
 				{
 					tx.x = template.x;
 					tx.y = template.y;
+					tx.a = template.a;
+					tx.b = template.b;
 				}
 		}
 		space.com.absPosTransform.set(id, tx.clone());

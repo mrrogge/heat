@@ -8,7 +8,7 @@ class HeatSpriteBatch extends h2d.Drawable {
 	var buffer:h3d.Buffer;
 	var state:h2d.impl.BatchDrawState;
 	final ids:Array<EntityId> = [];
-	var hasRotationScale = false;
+	var hasRotationScale = true;
 	var isEmpty = false;
 
 	override public function new(bridge:HeapsBridge) {
@@ -78,9 +78,8 @@ class HeatSpriteBatch extends h2d.Drawable {
 			// TODO: rotation from transform hasn't been implemented yet but we're leaving the calcs here for future
 			final angleRadians = 0;
 			// TODO: also need to figure out how scaling works from transform
-			final scale = 1.;
-			final scaleX = scale;
-			final scaleY = scale;
+			final scaleX = transform.a;
+			final scaleY = transform.d;
 			var ca = Math.cos(angleRadians), sa = Math.sin(angleRadians);
 			var hx = textureRegion.w, hy = textureRegion.h;
 			final dx = -textureRegion.ox;

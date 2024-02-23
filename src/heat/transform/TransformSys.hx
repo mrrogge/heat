@@ -10,8 +10,7 @@ class TransformSys {
 	public static function makeTransformBundle(space:heat.I_UsesHeatStandardPlugin, id:EntityId, template:heat.ecs.BundleTemplate<{
 		x:Float,
 		y:Float,
-		a:Float,
-		b:Float
+		scale:Float,
 	}> = DEFAULT) {
 		final tx = new MTransform();
 		space.com.transform.set(id, tx);
@@ -22,8 +21,8 @@ class TransformSys {
 				{
 					tx.x = template.x;
 					tx.y = template.y;
-					tx.a = template.a;
-					tx.b = template.b;
+					tx.a = template.scale;
+					tx.d = template.scale;
 				}
 		}
 		space.com.absPosTransform.set(id, tx.clone());

@@ -3,7 +3,7 @@ package heat.core;
 class Timer {
 	public var acc(default, null) = 0.;
 
-	var overflow = 0.;
+	public var overflow(default, null) = 0.;
 
 	public var period:Null<Float>;
 	public var mode:TimerMode = ONCE;

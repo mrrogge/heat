@@ -1,6 +1,7 @@
 package heat;
 
 using heat.core.MathTools;
+using heat.core.OptionTools;
 
 class HeatPrelude {}
 

@@ -33,4 +33,12 @@ class MathTools {
 	public static inline function invLerp(cls:Class<Math>, source:Float, low:Float, high:Float):Float {
 		return (source - low) / (high - low);
 	}
+
+	public static inline function imin(cls:Class<Math>, a:Int, b:Int):Int {
+		return Std.int(Math.min(a, b));
+	}
+
+	public static inline function imax(cls:Class<Math>, a:Int, b:Int):Int {
+		return Std.int(Math.max(a, b));
+	}
 }

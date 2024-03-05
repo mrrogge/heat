@@ -15,6 +15,7 @@ class PluginTools {
 			public var onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
 			public var onWindowResizeRequestSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
 			public final comQueryPool:heat.ecs.ComQueryPool;
+			public var bridge:Null<heat.bridges.IHeatBridge>;
 			public function getNextID():heat.ecs.EntityId;
 			public function update(dt:Float):Void;
 		};

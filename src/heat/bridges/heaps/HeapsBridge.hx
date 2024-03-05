@@ -6,7 +6,7 @@ import heat.ecs.EntityId;
 import heat.event.Signal;
 import heat.ecs.ComQuery;
 
-class HeapsBridge {
+class HeapsBridge implements IHeatBridge {
 	static var KEYCODE_MAP:Null<Map<Int, KeyCode>>;
 
 	@:allow(heat.bridges.heaps.HeatSpriteBatch)
@@ -120,6 +120,7 @@ class HeapsBridge {
 		if (this.space != null)
 			throw new haxe.Exception("can only attach to one HeatSpace at a time");
 		this.space = space;
+		this.space.bridge = this;
 		onAttach();
 	}
 
@@ -135,6 +136,7 @@ class HeapsBridge {
 		if (space == null)
 			return;
 		onDetach();
+		space.bridge = null;
 		space = null;
 		space = null;
 	}
@@ -315,7 +317,7 @@ class HeapsBridge {
 			final camTX = space.com.absPosTransform.get(cameraId);
 			scene.camera.clipViewport = true;
 			scene.camera.setPosition(camTX.x, camTX.y);
-			scene.camera.setAnchor(0.5, 0.5);
+			scene.camera.setAnchor(camCom.anchor.x, camCom.anchor.y);
 			scene.camera.setScale(camCom.scale, camCom.scale);
 			scene.camera.sync(scene.renderer);
 			scene.camera.enter(scene.renderer);
@@ -323,47 +325,52 @@ class HeapsBridge {
 				if (!camCom.idFilter(subjectId))
 					continue;
 				final transform = space.com.absPosTransform.get(subjectId);
-				final textureRegion = space.com.textureRegions.get(subjectId);
-				if (transform == null || textureRegion == null) {
+				if (transform == null) {
 					continue;
 				}
-				switch (textureRegion.handle) {
-					case Color(_), File(_):
-						{
-							spriteBatch.addID(subjectId);
-						}
-					case Other(other):
-						{
-							final isBatchable = Std.isOfType(other, hxd.res.Image) || Std.isOfType(other, h3d.mat.Texture);
-							if (isBatchable) {
+				final textureRegion = space.com.textureRegions.get(subjectId);
+				if (textureRegion != null) {
+					switch (textureRegion.handle) {
+						case Color(_), File(_):
+							{
 								spriteBatch.addID(subjectId);
-							} else {
-								if (Std.isOfType(other, h2d.Graphics)) {
-									@:privateAccess spriteBatch.sync(scene.renderer);
-									@:privateAccess spriteBatch.draw(scene.renderer);
-									spriteBatch.clearIDs();
-									final graphics = (other : h2d.Graphics);
-									graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
-									@:privateAccess graphics.sync(scene.renderer);
-									@:privateAccess graphics.draw(scene.renderer);
+							}
+						case Other(other):
+							{
+								final isBatchable = Std.isOfType(other, hxd.res.Image) || Std.isOfType(other, h3d.mat.Texture);
+								if (isBatchable) {
+									spriteBatch.addID(subjectId);
 								} else {
-									throw new haxe.Exception('unexpected texture handle type');
+									if (Std.isOfType(other, h2d.Graphics)) {
+										@:privateAccess spriteBatch.sync(scene.renderer);
+										@:privateAccess spriteBatch.draw(scene.renderer);
+										spriteBatch.clearIDs();
+										final graphics = (other : h2d.Graphics);
+										graphics.setPosition(transform.x - textureRegion.ox, transform.y - textureRegion.oy);
+										@:privateAccess graphics.sync(scene.renderer);
+										@:privateAccess graphics.draw(scene.renderer);
+									} else {
+										throw new haxe.Exception('unexpected texture handle type');
+									}
 								}
 							}
-						}
-					case None:
-						{}
+						case None:
+							{}
+					}
 				}
-
-				final text = space.com.text.get(subjectId);
-				if (text != null) {
+				final textGraphic = space.com.textGraphics.get(subjectId);
+				if (textGraphic == null) {
+					continue;
+				}
+				if (textGraphic != null && Std.isOfType(textGraphic, HeapsTextGraphic)) {
+					final heapsTextGraphic = cast(textGraphic, HeapsTextGraphic);
 					@:privateAccess spriteBatch.sync(scene.renderer);
 					@:privateAccess spriteBatch.draw(scene.renderer);
 					spriteBatch.clearIDs();
-					dummyText.setPosition(transform.x, transform.y);
-					@:privateAccess dummyText.sync(scene.renderer);
-					dummyText.text = text;
-					@:privateAccess dummyText.draw(scene.renderer);
+					final heapsText = heapsTextGraphic.heapsText;
+					heapsText.setPosition(transform.x, transform.y);
+					@:privateAccess heapsText.sync(scene.renderer);
+					@:privateAccess heapsText.draw(scene.renderer);
 				}
 			}
 			@:privateAccess spriteBatch.sync(scene.renderer);
@@ -373,20 +380,24 @@ class HeapsBridge {
 		}
 		scene.renderer.end();
 		engine.end();
+	}
 
-		function getDrawCallCount():Int {
-			return engine.drawCalls;
-		}
+	function getDrawCallCount():Int {
+		return engine.drawCalls;
+	}
 
-		function getFPS():Float {
-			return engine.fps;
-		}
+	function getFPS():Float {
+		return engine.fps;
+	}
 
-		function updateAudio() {
-			static final query = new ComQuery();
-			query.clear();
-			// TODO
-		}
-		function drawTextureRegion() {}
+	function updateAudio() {
+		static final query = new ComQuery();
+		query.clear();
+		// TODO
+	}
+
+	public function makeTextGraphic():HeapsTextGraphic {
+		final heapsText = new h2d.Text(hxd.res.DefaultFont.get());
+		return new HeapsTextGraphic(heapsText);
 	}
 }

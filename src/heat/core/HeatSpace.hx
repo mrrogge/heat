@@ -8,6 +8,7 @@ import heat.event.SignalEmitter;
 import heat.ecs.ComQueryPool;
 
 class HeatSpace {
+	public var bridge:Null<heat.bridges.IHeatBridge> = null;
 	public var lastID(default, null):Null<EntityId> = null;
 
 	public var onKeyPressedSlot:Slot<KeyCode>;

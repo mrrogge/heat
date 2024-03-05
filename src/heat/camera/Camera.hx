@@ -6,6 +6,7 @@ class Camera {
 	public var scale = 1.;
 	public var viewWidth = 800;
 	public var viewHeight = 600;
+	public final anchor = new heat.HeatPrelude.MVectorFloat2();
 
 	public function new() {}
 

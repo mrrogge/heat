@@ -1,6 +1,7 @@
 package heat.ecs;
 
 class ComQuery {
+	// TODO: it seems queries could use macros to return anon objects consisting of components, given the member names of the com maps. This would make them quite a bit easier to use.
 	public static function combine(query1:ComQuery, query2:ComQuery):ComQuery {
 		final combined = query1.clone();
 		for (cond in query2.condArray) {

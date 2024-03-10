@@ -382,11 +382,11 @@ class HeapsBridge implements IHeatBridge {
 		engine.end();
 	}
 
-	function getDrawCallCount():Int {
+	public function getDrawCallCount():Int {
 		return engine.drawCalls;
 	}
 
-	function getFPS():Float {
+	public inline function getFPS():Float {
 		return engine.fps;
 	}
 

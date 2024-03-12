@@ -33,7 +33,7 @@ class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandard
 		};
 
 		final heroID = getNextID();
-		TransformSys.makeTransformBundle(this, heroID, CUSTOM({x: 10, y: 10}));
+		TransformSys.makeTransformBundle(this, heroID, CUSTOM({x: 10, y: 10, scale: 1}));
 		com.drawOrder.set(heroID, 0);
 		final heroTexture = new TextureRegion(None, 0, 0, 32, 48);
 		com.textureRegions.set(heroID, heroTexture);
@@ -45,7 +45,7 @@ class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandard
 
 		for (_ in 0...100) {
 			final id = getNextID();
-			TransformSys.makeTransformBundle(this, id, CUSTOM({x: Math.random() * 100, y: Math.random() * 100}));
+			TransformSys.makeTransformBundle(this, id, CUSTOM({x: Math.random() * 100, y: Math.random() * 100, scale: 1}));
 			com.drawOrder.set(id, 0);
 			final texture = new TextureRegion(None, 0, 0, 32, 48);
 			com.textureRegions.set(id, texture);
@@ -71,7 +71,7 @@ class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandard
 	override function update(dt:Float) {
 		HeroSys.update(this, dt);
 		heat.ui.FlexBoxSys.update(this, dt);
-		this.syncAbsPos();
+		this.syncAbsPositions();
 	}
 
 	override function onKeyPressed(keyCode:KeyCode) {

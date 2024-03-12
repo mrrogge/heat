@@ -9,7 +9,7 @@ class TileMapSys {
 		for (colIdx => col in source.tileData) {
 			for (rowIdx => datum in col) {
 				final id = space.getNextID();
-				space.makeTransformBundle(id, CUSTOM({x: colIdx * source.tileSize.x, y: rowIdx * source.tileSize.y}));
+				space.makeTransformBundle(id, CUSTOM({x: colIdx * source.tileSize.x, y: rowIdx * source.tileSize.y, scale: 1}));
 				space.setParent(id, rootId);
 				final texRegion = new TextureRegion(None, 0, 0, source.tileSize.x, source.tileSize.y, 0, 0);
 				texRegion.handle = tilekindToTexture(datum.kind);

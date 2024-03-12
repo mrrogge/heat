@@ -21,6 +21,8 @@ class HeapsBridge implements IHeatBridge {
 
 	var onWindowResizeRequestSlot:Slot<heat.core.window.Window.WindowResizeRequest>;
 
+	var onPlaySoundRequestSlot:Slot<heat.audio.AudioSource>;
+
 	@:allow(heat.bridges.heaps.HeatSpriteBatch)
 	var scene:Null<h2d.Scene>;
 	var dummyDrawable:Null<h2d.Drawable>;
@@ -400,4 +402,36 @@ class HeapsBridge implements IHeatBridge {
 		final heapsText = new h2d.Text(hxd.res.DefaultFont.get());
 		return new HeapsTextGraphic(heapsText);
 	}
+
+	function onPlayAudioSourceRequest(source:heat.audio.AudioSource) {
+		var channel:Null<hxd.snd.Channel> = null;
+		switch (source.handle) {
+			case File(path):
+				{
+					final resource = hxd.Res.load(path.toString()).toSound();
+					channel = resource.play();
+				}
+			case Other(other):
+				{
+					if (Std.isOfType(other, hxd.res.Sound)) {
+						final resource = (other : hxd.res.Sound);
+						channel = resource.play();
+					} else {
+						throw new haxe.Exception('unexpected audio handle type');
+					}
+				}
+			case None:
+				{
+					return;
+				}
+		}
+		if (channel == null) {
+			return;
+		}
+		final instance = new HeapsAudioInstance(source.handle, channel);
+		final id = space.getNextID();
+		space.com.audioInstances.set(id, instance);
+	}
+
+	function drawTextureRegion() {}
 }

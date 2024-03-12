@@ -1,25 +1,14 @@
 package heat.audio;
 
-import heat.std.HeatSpaceStd;
+import heat.ecs.EntityId;
+import heat.I_UsesHeatStandardPlugin;
 
 class AudioSystem {
-	public static function play(space:heat.std.HeatSpaceStd, id:EntityId) {
-		final query = space.comQueryPool.get().with(space.com.audioSources);
-		if (!query.checkId(id)) {
-			return;
+	public static function cleanupFinishedAudioInstances(space:I_UsesHeatStandardPlugin) {
+		for (id => instance in space.com.audioInstances) {
+			if (instance.isFinished()) {
+				space.com.audioInstances.remove(id);
+			}
 		}
-		final source = space.com.audioSources.get(id);
-		final instanceId = space.getNextID();
-		space.com.audioInstances.set(instanceId, new AudioInstance(switch (source.handle) {
-			case File(path): {
-					File(new haxe.io.Path(path.toString()));
-				}
-			case Other(other): {
-					Other(other);
-				}
-			case None: {
-					None;
-				}
-		}));
 	}
 }

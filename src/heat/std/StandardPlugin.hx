@@ -41,8 +41,8 @@ class StandardPlugin {
 		flexBoxItems is heat.ui.FlexBoxItem,
 		dimensions is heat.core.Dimension,
 		audioSources is heat.audio.AudioSource,
-		audioInstances is heat.audio.AudioInstance,
 		textGraphics is heat.text.ITextGraphic,
+		audioInstances is heat.audio.IAudioInstance,
 	];
 }
 #end

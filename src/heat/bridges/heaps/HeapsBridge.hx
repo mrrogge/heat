@@ -6,15 +6,13 @@ import heat.ecs.EntityId;
 import heat.event.Signal;
 import heat.ecs.ComQuery;
 
-class HeapsBridge implements IHeatBridge {
+class HeapsBridge {
 	static var KEYCODE_MAP:Null<Map<Int, KeyCode>>;
 
 	@:allow(heat.bridges.heaps.HeatSpriteBatch)
-	var space:Null<heat.I_UsesHeatStandardPlugin>;
+	final space:heat.I_UsesHeatStandardPlugin;
 	var engine:Null<h3d.Engine>;
 	var engineIsReady = false;
-
-	final onReady:() -> Void;
 
 	final onKeyPressSignal = new Signal<KeyCode>();
 	final onKeyReleaseSignal = new Signal<KeyCode>();
@@ -34,8 +32,21 @@ class HeapsBridge implements IHeatBridge {
 
 	var resizeFlag = false;
 
-	public function new(onReady:() -> Void) {
-		this.onReady = onReady;
+	public function new(space:heat.I_UsesHeatStandardPlugin) {
+		this.space = space;
+		this.space.onKeyPressedSlot.connect(onKeyPressSignal);
+		this.space.onKeyReleasedSlot.connect(onKeyReleaseSignal);
+		this.space.windowResizeRequestedSignal.connect(onWindowResizeRequestSlot);
+		this.space.getDrawCallCount = getDrawCallCount;
+		this.space.getFPS = getFPS;
+		this.space.makeTextGraphic = makeTextGraphic;
+		// TODO:
+		// * this.space.makeWindow
+		// * this.space.destroyWindow
+		// * this.space.playAudio
+
+		cameraQuery = new ComQuery().with(this.space.com.camera).with(this.space.com.absPosTransform).with(this.space.com.drawOrder);
+		cameraSubjectQuery = new ComQuery().with(this.space.com.absPosTransform).with(this.space.com.drawOrder).without(this.space.com.camera);
 
 		setupKeycodeMapData();
 
@@ -104,9 +115,6 @@ class HeapsBridge implements IHeatBridge {
 		#end
 
 		hxd.System.setLoop(function() {
-			if (space == null)
-				return;
-
 			hxd.Timer.update();
 			space.update(hxd.Timer.dt);
 
@@ -114,42 +122,7 @@ class HeapsBridge implements IHeatBridge {
 		});
 
 		engineIsReady = true;
-
-		onReady();
 	};
-
-	public function attach(space:I_UsesHeatStandardPlugin) {
-		if (this.space != null)
-			throw new haxe.Exception("can only attach to one HeatSpace at a time");
-		this.space = space;
-		this.space.bridge = this;
-		onAttach();
-	}
-
-	function onAttach() {
-		space.onKeyPressedSlot.connect(onKeyPressSignal);
-		space.onKeyReleasedSlot.connect(onKeyReleaseSignal);
-		space.onWindowResizeRequestSignal.connect(onWindowResizeRequestSlot);
-		cameraQuery = new ComQuery().with(space.com.camera).with(space.com.absPosTransform).with(space.com.drawOrder);
-		cameraSubjectQuery = new ComQuery().with(space.com.absPosTransform).with(space.com.drawOrder).without(space.com.camera);
-	}
-
-	public function detach() {
-		if (space == null)
-			return;
-		onDetach();
-		space.bridge = null;
-		space = null;
-		space = null;
-	}
-
-	function onDetach() {
-		space.onKeyPressedSlot.disconnect(onKeyPressSignal);
-		space.onKeyReleasedSlot.disconnect(onKeyReleaseSignal);
-		space.onWindowResizeRequestSignal.disconnect(onWindowResizeRequestSlot);
-		cameraQuery = new ComQuery();
-		cameraSubjectQuery = new ComQuery();
-	}
 
 	function setupKeycodeMapData() {
 		if (KEYCODE_MAP != null) {

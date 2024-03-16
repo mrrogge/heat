@@ -5,7 +5,7 @@ using tilemap.TileMapSys;
 import tilemap.TileMapSource;
 
 @:build(SimplePlatformerPlugin.apply())
-@:build(heat.std.StandardPlugin.apply())
+@:build(heat.plugin.std.StandardPlugin.apply())
 class SimplePlatformerSpace extends HeatSpace implements heat.I_UsesHeatStandardPlugin implements heat.I_UsesSimplePlatformerPlugin {
 	final cameraQuery = new ComQuery();
 	final transformQuery = new ComQuery();

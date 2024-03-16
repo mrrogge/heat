@@ -1,23 +1,35 @@
-package heat.core;
+package heat.plugin;
 
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
+import heat.core.Result;
 
 using haxe.macro.TypeTools;
 using haxe.macro.ComplexTypeTools;
 
 class PluginTools {
-	public static function makeInterface(name:String):TypeDefinition {
+	/**
+		Creates a new plugin interface type definition using the minimum functionality for a HeatSpace.
+	**/
+	public static function makeMinimumInterfaceTD(name:String):TypeDefinition {
 		final td = macro interface $name {
+			// basics
+			public function update(dt:Float):Void;
+			public function getNextID():heat.ecs.EntityId;
 			public var lastID(default, null):Null<heat.ecs.EntityId>;
+			// key input
 			public var onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
 			public var onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
-			public var onWindowResizeRequestSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
-			public final comQueryPool:heat.ecs.ComQueryPool;
-			public var bridge:Null<heat.bridges.IHeatBridge>;
-			public function getNextID():heat.ecs.EntityId;
-			public function update(dt:Float):Void;
+			// graphics
+			public var windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
+			public dynamic function makeTextGraphic():heat.text.ITextGraphic;
+			public dynamic function getDrawCallCount():Int;
+			public dynamic function getFPS():Float;
+			public dynamic function makeWindow():heat.core.Result<heat.core.Tuple2<heat.graphics.IWindow, heat.graphics.WindowIndex>, String>;
+			public dynamic function destroyWindow(index:heat.graphics.WindowIndex):heat.core.Result<heat.core.Noise, String>;
+			// audio
+			public dynamic function playAudio(source:heat.audio.AudioSource):heat.core.Result<heat.audio.IAudioInstance, String>;
 		};
 		td.pack = ['heat'];
 		return td;
@@ -103,15 +115,20 @@ class PluginTools {
 		return fields;
 	}
 
-	public static function initWrapper(name:String, buildTypeDef:(name:String) -> TypeDefinition) {
+	public static function makeInitMacro(interfaceName:String, modifierFunction:(td:TypeDefinition) -> Void) {
 		Context.onAfterInitMacros(() -> {
 			try {
-				Context.getType('heat.${name}');
+				Context.getType('heat.${interfaceName}');
 			} catch (e:String) {
-				final td = buildTypeDef(name);
+				final td = makeMinimumInterfaceTD(interfaceName);
+				modifierFunction(td);
 				Context.defineType(td);
 			}
 		});
+	}
+
+	public macro static function makeMinimalInterface():Void {
+		PluginTools.makeInitMacro("I_MinimalHeatSpace", (td:TypeDefinition) -> {});
 	}
 }
 #end

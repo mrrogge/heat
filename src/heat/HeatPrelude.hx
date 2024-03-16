@@ -12,7 +12,6 @@ typedef CameraSys = heat.camera.CameraSys;
 // core
 typedef Circle = heat.core.Circle;
 typedef Color = heat.core.Color;
-typedef HeatSpace = heat.core.HeatSpace;
 typedef ILineSegment = heat.core.ILineSegment;
 typedef IRect = heat.core.IRect;
 typedef IVector2<T> = heat.core.IVector2<T>;
@@ -60,6 +59,9 @@ typedef Slot<T> = heat.event.Slot<T>;
 // key
 typedef KeyCode = heat.key.KeyCode;
 typedef KeyEventKind = heat.key.KeyEventKind;
+
+// space
+typedef HeatSpace = heat.space.HeatSpace;
 
 // texture
 typedef TextureHandle = heat.texture.TextureHandle;

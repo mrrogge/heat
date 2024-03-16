@@ -1,8 +1,8 @@
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import heat.core.PluginTools;
-import heat.std.StandardPlugin;
+import heat.plugin.PluginTools;
+import heat.plugin.std.StandardPlugin;
 
 class SimplePlatformerPlugin {
 	public static macro function apply():Array<Field> {
@@ -17,17 +17,12 @@ class SimplePlatformerPlugin {
 	}
 
 	public static function init():Void {
-		PluginTools.initWrapper("I_UsesSimplePlatformerPlugin", (name:String) -> {
-			final td = PluginTools.makeInterface(name);
-			switch (PluginTools.addGroupFieldToTypeDef(td, "com", StandardPlugin.comMapExprs)) {
-				case Err(err): return Context.error(err, Context.currentPos());
-				case Ok(_): {}
-			}
+		PluginTools.makeInitMacro("I_UsesSimplePlatformerPlugin", (td:TypeDefinition) -> {
+			heat.plugin.std.StandardPlugin.addFieldsToInterfaceTD(td);
 			switch (PluginTools.addGroupFieldToTypeDef(td, "game", comMapExprs)) {
-				case Err(err): return Context.error(err, Context.currentPos());
+				case Err(err): Context.error(err, Context.currentPos());
 				case Ok(_): {}
 			}
-			return td;
 		});
 	}
 

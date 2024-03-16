@@ -1,9 +1,9 @@
-package heat.std;
+package heat.plugin.std;
 
 #if (macro || eval)
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import heat.core.PluginTools;
+import heat.plugin.PluginTools;
 
 class StandardPlugin {
 	public macro static function apply():Array<Field> {
@@ -17,14 +17,18 @@ class StandardPlugin {
 		return fields;
 	}
 
+	public static function addFieldsToInterfaceTD(td:TypeDefinition):Void {
+		switch (PluginTools.addGroupFieldToTypeDef(td, "com", comMapExprs)) {
+			case Err(err):
+				Context.error(err, Context.currentPos());
+			case Ok(_):
+				{}
+		}
+	}
+
 	public macro static function init():Void {
-		PluginTools.initWrapper("I_UsesHeatStandardPlugin", (name:String) -> {
-			final td = PluginTools.makeInterface(name);
-			switch (PluginTools.addGroupFieldToTypeDef(td, "com", comMapExprs)) {
-				case Err(err): return Context.error(err, Context.currentPos());
-				case Ok(_): {}
-			}
-			return td;
+		PluginTools.makeInitMacro("I_UsesHeatStandardPlugin", (td:TypeDefinition) -> {
+			addFieldsToInterfaceTD(td);
 		});
 	}
 

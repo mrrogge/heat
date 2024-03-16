@@ -1,0 +1,5 @@
+-cp src
+-cp examples/CliPong
+extraParams.hxml
+--hl bin/cliPong.hl
+--main CliPong

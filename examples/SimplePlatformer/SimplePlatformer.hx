@@ -6,6 +6,8 @@ class SimplePlatformer {
 	}
 
 	public function new() {
-		new heat.bridges.heaps.HeapsBridge(new SimplePlatformerSpace());
+		new heat.bridges.heaps.HeapsBridge((bridge:heat.bridges.heaps.HeapsBridge) -> {
+			bridge.attachSpace(new SimplePlatformerSpace());
+		});
 	}
 }

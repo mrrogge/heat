@@ -10,9 +10,11 @@ class HeapsBridge {
 	static var KEYCODE_MAP:Null<Map<Int, KeyCode>>;
 
 	@:allow(heat.bridges.heaps.HeatSpriteBatch)
-	final space:heat.I_UsesHeatStandardPlugin;
+	var space:Null<heat.I_UsesHeatStandardPlugin> = null;
 	var engine:Null<h3d.Engine>;
 	var engineIsReady = false;
+
+	final onReady:(bridge:HeapsBridge) -> Void;
 
 	final onKeyPressSignal = new Signal<KeyCode>();
 	final onKeyReleaseSignal = new Signal<KeyCode>();
@@ -32,7 +34,18 @@ class HeapsBridge {
 
 	var resizeFlag = false;
 
-	public function new(space:heat.I_UsesHeatStandardPlugin) {
+	public function new(onReady:(bridge:HeapsBridge) -> Void) {
+		this.onReady = onReady;
+
+		setupKeycodeMapData();
+
+		// placeholder slot; gets replaced once system window resource is available
+		onWindowResizeRequestSlot = new Slot(function(request:heat.core.window.Window.WindowResizeRequest) {});
+
+		hxd.System.start(initSystem);
+	}
+
+	public function attachSpace(space:heat.I_UsesHeatStandardPlugin) {
 		this.space = space;
 		this.space.onKeyPressedSlot.connect(onKeyPressSignal);
 		this.space.onKeyReleasedSlot.connect(onKeyReleaseSignal);
@@ -47,13 +60,6 @@ class HeapsBridge {
 
 		cameraQuery = new ComQuery().with(this.space.com.camera).with(this.space.com.absPosTransform).with(this.space.com.drawOrder);
 		cameraSubjectQuery = new ComQuery().with(this.space.com.absPosTransform).with(this.space.com.drawOrder).without(this.space.com.camera);
-
-		setupKeycodeMapData();
-
-		// placeholder slot; gets replaced once system window resource is available
-		onWindowResizeRequestSlot = new Slot(function(request:heat.core.window.Window.WindowResizeRequest) {});
-
-		hxd.System.start(initSystem);
 	}
 
 	function initSystem() {
@@ -122,6 +128,8 @@ class HeapsBridge {
 		});
 
 		engineIsReady = true;
+
+		onReady(this);
 	};
 
 	function setupKeycodeMapData() {

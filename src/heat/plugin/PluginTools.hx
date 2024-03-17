@@ -19,10 +19,10 @@ class PluginTools {
 			public function getNextID():heat.ecs.EntityId;
 			public var lastID(default, null):Null<heat.ecs.EntityId>;
 			// key input
-			public var onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
-			public var onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
+			public final onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
+			public final onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
 			// graphics
-			public var windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
+			public final windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
 			public dynamic function makeTextGraphic():heat.text.ITextGraphic;
 			public dynamic function getDrawCallCount():Int;
 			public dynamic function getFPS():Float;

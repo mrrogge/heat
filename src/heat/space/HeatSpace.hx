@@ -2,15 +2,16 @@ package heat.space;
 
 class HeatSpace implements heat.I_MinimalHeatSpace {
 	public var lastID(default, null):Null<heat.ecs.EntityId> = null;
-	public var onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
-	public var onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
-	public var windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
+	public final onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
+	public final onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
+	public final windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
 
-	var windowResizeRequestedEmitter = new heat.event.SignalEmitter<heat.core.window.Window.WindowResizeRequest>();
+	final windowResizeRequestedEmitter = new heat.event.SignalEmitter<heat.core.window.Window.WindowResizeRequest>();
 
 	public function new() {
 		onKeyPressedSlot = new heat.HeatPrelude.Slot(onKeyPressed);
 		onKeyReleasedSlot = new heat.HeatPrelude.Slot(onKeyReleased);
+		windowResizeRequestedSignal = windowResizeRequestedEmitter.signal;
 	}
 
 	// basics

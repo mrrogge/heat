@@ -6,6 +6,6 @@ class CliPong {
 	}
 
 	public function new() {
-		new heat.bridges.dummy.DummyBridge(new CliPongSpace(), 100);
+		new heat.bridges.dummy.DummyBridge(new CliPongSpace(), 1000);
 	}
 }

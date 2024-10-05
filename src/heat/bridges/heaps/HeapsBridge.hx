@@ -371,7 +371,7 @@ class HeapsBridge {
 	}
 
 	public inline function getFPS():Float {
-		return engine.fps;
+		return 1 / hxd.Timer.dt;
 	}
 
 	function updateAudio() {
@@ -380,8 +380,23 @@ class HeapsBridge {
 		// TODO
 	}
 
-	public function makeTextGraphic():HeapsTextGraphic {
-		final heapsText = new h2d.Text(hxd.res.DefaultFont.get());
+	public function makeTextGraphic(fontHandle:heat.text.FontHandle):HeapsTextGraphic {
+		final font = switch (fontHandle) {
+			case File(path): {
+					// TODO
+					hxd.res.DefaultFont.get();
+				}
+			case Default: hxd.res.DefaultFont.get();
+			case Other(other): {
+					if (Std.isOfType(other, h2d.Font)) {
+						(other : h2d.Font);
+					} else {
+						throw new haxe.Exception("unexpected font type");
+					}
+				}
+			case None: hxd.res.DefaultFont.get();
+		}
+		final heapsText = new h2d.Text(font);
 		return new HeapsTextGraphic(heapsText);
 	}
 

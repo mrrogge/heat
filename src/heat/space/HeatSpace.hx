@@ -31,7 +31,7 @@ class HeatSpace implements heat.I_MinimalHeatSpace {
 
 	// graphics
 
-	public dynamic function makeTextGraphic():heat.text.ITextGraphic {
+	public dynamic function makeTextGraphic(fontHandle:heat.text.FontHandle):heat.text.ITextGraphic {
 		return new heat.bridges.dummy.DummyTextGraphic();
 	}
 

@@ -23,7 +23,7 @@ class PluginTools {
 			public final onKeyReleasedSlot:heat.event.Slot<heat.key.KeyEvent>;
 			// graphics
 			public final windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
-			public dynamic function makeTextGraphic():heat.text.ITextGraphic;
+			public dynamic function makeTextGraphic(fontHandle:heat.text.FontHandle):heat.text.ITextGraphic;
 			public dynamic function getDrawCallCount():Int;
 			public dynamic function getFPS():Float;
 			public dynamic function makeWindow():heat.core.Result<heat.core.Tuple2<heat.graphics.IWindow, heat.graphics.WindowIndex>, String>;

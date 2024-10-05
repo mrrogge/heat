@@ -18,6 +18,10 @@ class HeapsTextGraphic implements heat.text.ITextGraphic {
 
 	function set_fontHandle(fontHandle:heat.text.FontHandle):heat.text.FontHandle {
 		switch fontHandle {
+			case Default:
+				{
+					heapsText.font = hxd.res.DefaultFont.get();
+				}
 			case File(path):
 				{
 					// TODO
@@ -28,6 +32,8 @@ class HeapsTextGraphic implements heat.text.ITextGraphic {
 					if (Std.isOfType(other, h2d.Font)) {
 						final font = (other : h2d.Font);
 						heapsText.font = font;
+					} else {
+						throw new haxe.Exception("unknown font type");
 					}
 				}
 			case None:

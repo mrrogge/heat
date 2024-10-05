@@ -4,6 +4,7 @@ using heat.core.MathTools;
 using heat.core.OptionTools;
 
 class HeatPrelude {}
+typedef Option<T> = haxe.ds.Option<T>;
 
 // camera
 typedef Camera = heat.camera.Camera;

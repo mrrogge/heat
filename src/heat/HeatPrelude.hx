@@ -59,6 +59,7 @@ typedef Slot<T> = heat.event.Slot<T>;
 
 // key
 typedef KeyCode = heat.key.KeyCode;
+typedef KeyEvent = heat.key.KeyEvent;
 typedef KeyEventKind = heat.key.KeyEventKind;
 
 // space

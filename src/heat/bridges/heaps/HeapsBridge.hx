@@ -1,6 +1,7 @@
 package heat.bridges.heaps;
 
 import heat.key.KeyCode;
+import heat.key.KeyEvent;
 import heat.event.Slot;
 import heat.ecs.EntityId;
 import heat.event.Signal;
@@ -16,8 +17,8 @@ class HeapsBridge {
 
 	final onReady:(bridge:HeapsBridge) -> Void;
 
-	final onKeyPressSignal = new Signal<KeyCode>();
-	final onKeyReleaseSignal = new Signal<KeyCode>();
+	final onKeyPressSignal = new Signal<KeyEvent>();
+	final onKeyReleaseSignal = new Signal<KeyEvent>();
 
 	var onWindowResizeRequestSlot:Slot<heat.core.window.Window.WindowResizeRequest>;
 
@@ -86,11 +87,11 @@ class HeapsBridge {
 						if (!hxd.Key.ALLOW_KEY_REPEAT && hxd.Key.isPressed(event.keyCode)) {
 							return;
 						}
-						onKeyPressSignal.emit(KEYCODE_MAP.get(event.keyCode));
+						onKeyPressSignal.emit(new KeyEvent(KEYCODE_MAP.get(event.keyCode), PRESSED));
 					}
 				case EKeyUp:
 					{
-						onKeyReleaseSignal.emit(KEYCODE_MAP.get(event.keyCode));
+						onKeyReleaseSignal.emit(new KeyEvent(KEYCODE_MAP.get(event.keyCode), RELEASED));
 					}
 				default:
 					{}

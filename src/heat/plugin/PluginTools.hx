@@ -19,8 +19,8 @@ class PluginTools {
 			public function getNextID():heat.ecs.EntityId;
 			public var lastID(default, null):Null<heat.ecs.EntityId>;
 			// key input
-			public final onKeyPressedSlot:heat.event.Slot<heat.key.KeyCode>;
-			public final onKeyReleasedSlot:heat.event.Slot<heat.key.KeyCode>;
+			public final onKeyPressedSlot:heat.event.Slot<heat.key.KeyEvent>;
+			public final onKeyReleasedSlot:heat.event.Slot<heat.key.KeyEvent>;
 			// graphics
 			public final windowResizeRequestedSignal:heat.event.ISignal<heat.core.window.Window.WindowResizeRequest>;
 			public dynamic function makeTextGraphic():heat.text.ITextGraphic;

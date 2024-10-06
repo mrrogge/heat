@@ -26,6 +26,7 @@ class PluginTools {
 			public dynamic function makeTextGraphic(fontHandle:heat.text.FontHandle):heat.text.ITextGraphic;
 			public dynamic function getDrawCallCount():Int;
 			public dynamic function getFPS():Float;
+			public dynamic function isKeyDown(code:heat.key.KeyCode):Bool;
 			public dynamic function makeWindow():heat.core.Result<heat.core.Tuple2<heat.graphics.IWindow, heat.graphics.WindowIndex>, String>;
 			public dynamic function destroyWindow(index:heat.graphics.WindowIndex):heat.core.Result<heat.core.Noise, String>;
 			// audio

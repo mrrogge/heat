@@ -43,6 +43,10 @@ class HeatSpace implements heat.I_MinimalHeatSpace {
 		return 0;
 	}
 
+	public dynamic function isKeyDown(code:heat.key.KeyCode):Bool {
+		return false;
+	}
+
 	public dynamic function makeWindow():heat.core.Result<heat.core.Tuple2<heat.graphics.IWindow, heat.graphics.WindowIndex>, String> {
 		return Err("Not implemented");
 	}

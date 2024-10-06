@@ -9,6 +9,7 @@ import heat.ecs.ComQuery;
 
 class HeapsBridge {
 	static var KEYCODE_MAP:Null<Map<Int, KeyCode>>;
+	static var KEYCODE_REV_MAP:Map<KeyCode, Int> = [];
 
 	@:allow(heat.bridges.heaps.HeatSpriteBatch)
 	var space:Null<heat.I_UsesHeatStandardPlugin> = null;
@@ -54,6 +55,7 @@ class HeapsBridge {
 		this.space.getDrawCallCount = getDrawCallCount;
 		this.space.getFPS = getFPS;
 		this.space.makeTextGraphic = makeTextGraphic;
+		this.space.isKeyDown = isKeyDown;
 		// TODO:
 		// * this.space.makeWindow
 		// * this.space.destroyWindow
@@ -258,6 +260,9 @@ class HeapsBridge {
 			hxd.Key.LALT => LALT,
 			hxd.Key.RALT => RALT,
 		];
+		for (intCode => code in KEYCODE_MAP) {
+			KEYCODE_REV_MAP.set(code, intCode);
+		}
 	}
 
 	function sortByDrawOrder(a:EntityId, b:EntityId) {
@@ -430,5 +435,7 @@ class HeapsBridge {
 		space.com.audioInstances.set(id, instance);
 	}
 
-	function drawTextureRegion() {}
+	function isKeyDown(code:heat.key.KeyCode):Bool {
+		return hxd.Key.isDown(KEYCODE_REV_MAP.get(code));
+	}
 }

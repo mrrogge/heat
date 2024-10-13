@@ -7,6 +7,10 @@ using heat.core.MathTools;
 @:forwardStatics
 abstract VectorFloat2(Vector2<Float>) from Vector2<Float> to Vector2<Float> {
 	public static final ORIGIN = new VectorFloat2(0, 0);
+	public static final LEFT = new VectorFloat2(-1, 0);
+	public static final RIGHT = new VectorFloat2(1, 0);
+	public static final UP = new VectorFloat2(0, -1);
+	public static final DOWN = new VectorFloat2(0, 1);
 
 	public inline function new(x = 0., y = 0.) {
 		this = new Vector2<Float>(x, y);
